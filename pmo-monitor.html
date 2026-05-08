@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMO Monitor — DB Diagnósticos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090f;
+    --surface: #0f1623;
+    --surface2: #162035;
+    --border: #1e2d45;
+    --border2: #253650;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --success: #10b981;
+    --text: #eef2ff;
+    --muted: #4b6080;
+    --muted2: #7a95b5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -250px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(59,130,246,0.09) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 30px 0 26px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+    animation: fadeDown 0.4s ease both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, #1d4ed8, #0891b2);
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 28px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  .logo-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 21px; font-weight: 800;
+    letter-spacing: -0.6px; line-height: 1.1;
+    background: linear-gradient(90deg, #e0eaff, #93c5fd);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .logo-text p {
+    font-size: 11px; color: var(--muted2);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px;
+    background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+    font-size: 11px; color: #6ee7b7; font-weight: 500; letter-spacing: 0.04em;
+  }
+
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #10b981;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+    text-decoration: none; white-space: nowrap;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(59,130,246,0.35); }
+
+  .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.06); }
+
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+  .btn-danger { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+  .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+  /* ── STATS ── */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.45s ease 0.05s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .stat-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+
+  .si-blue { background: rgba(59,130,246,0.14); }
+  .si-red { background: rgba(239,68,68,0.14); }
+  .si-yellow { background: rgba(245,158,11,0.14); }
+  .si-green { background: rgba(16,185,129,0.14); }
+
+  .stat-info { flex: 1; min-width: 0; }
+
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 700; line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .stat-val.blue { color: #93c5fd; }
+  .stat-val.red { color: #fca5a5; }
+  .stat-val.yellow { color: #fcd34d; }
+  .stat-val.green { color: #6ee7b7; }
+
+  .stat-label { font-size: 12px; color: var(--muted2); margin-top: 3px; }
+
+  /* ── MAIN GRID ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .section-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .section-title h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.02em; text-transform: uppercase; color: var(--muted2);
+  }
+
+  .badge {
+    padding: 3px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  .badge-red { background: rgba(239,68,68,0.15); color: #fca5a5; }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: #fcd34d; }
+  .badge-blue { background: rgba(59,130,246,0.15); color: #93c5fd; }
+  .badge-green { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+  .badge-gray { background: rgba(100,116,139,0.15); color: var(--muted2); }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 4px;
+    padding: 16px 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    padding: 8px 14px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; background: none; color: var(--muted2);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Alert list */
+  .alert-list { padding: 0; }
+
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: slideIn 0.3s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .alert-item:last-child { border-bottom: none; }
+  .alert-item:hover { background: rgba(255,255,255,0.02); }
+
+  .alert-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+  }
+
+  .alert-dot.red { background: var(--danger); box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+  .alert-dot.yellow { background: var(--warning); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+
+  .alert-body { flex: 1; min-width: 0; }
+
+  .alert-name {
+    font-size: 14px; font-weight: 500; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .alert-meta {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;
+  }
+
+  .alert-gp { font-size: 12px; color: var(--muted2); }
+
+  .alert-tag {
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
+  }
+
+  .tag-status { background: rgba(239,68,68,0.12); color: #fca5a5; }
+  .tag-risco { background: rgba(245,158,11,0.12); color: #fcd34d; }
+
+  .alert-days {
+    font-size: 11px; color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .empty-state {
+    padding: 48px 22px;
+    text-align: center;
+  }
+
+  .empty-state .icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { color: var(--muted2); font-size: 14px; }
+  .empty-state small { color: var(--muted); font-size: 12px; }
+
+  /* Loading */
+  .loading {
+    padding: 40px 22px; text-align: center;
+    color: var(--muted2); font-size: 13px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  /* Cadastro */
+  .form-group { padding: 18px 22px; border-bottom: 1px solid var(--border); }
+  .form-group:last-child { border-bottom: none; }
+
+  .form-label {
+    font-size: 11px; font-weight: 600; color: var(--muted2);
+    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; display: block;
+  }
+
+  .form-input {
+    width: 100%; padding: 9px 12px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 8px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  }
+
+  .form-input::placeholder { color: var(--muted); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .form-check {
+    display: flex; align-items: center; gap: 8px; margin-top: 6px;
+  }
+
+  .form-check input[type="checkbox"] {
+    width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer;
+  }
+
+  .form-check label { font-size: 12px; color: var(--muted2); cursor: pointer; }
+
+  /* Projeto list (sidebar) */
+  .proj-list { max-height: 320px; overflow-y: auto; }
+
+  .proj-list::-webkit-scrollbar { width: 4px; }
+  .proj-list::-webkit-scrollbar-track { background: transparent; }
+  .proj-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  .proj-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 22px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .proj-item:last-child { border-bottom: none; }
+  .proj-item:hover { background: rgba(255,255,255,0.02); }
+
+  .proj-item-info { flex: 1; min-width: 0; }
+
+  .proj-item-name {
+    font-size: 13px; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .proj-item-gp { font-size: 11px; color: var(--muted2); margin-top: 2px; }
+
+  .proj-status-dots { display: flex; gap: 4px; flex-shrink: 0; }
+
+  .mini-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    title: '';
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    background: var(--surface2); border: 1px solid var(--border2);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 999; pointer-events: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
+  #toast.error { border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+
+  /* Scrollable alert list */
+  .alert-list-wrap { max-height: 480px; overflow-y: auto; }
+  .alert-list-wrap::-webkit-scrollbar { width: 4px; }
+  .alert-list-wrap::-webkit-scrollbar-track { background: transparent; }
+  .alert-list-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: repeat(2,1fr); }
+  }
+
+  @media (max-width: 500px) {
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .wrap { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-area">
+        <div class="logo-icon">📊</div>
+        <div class="logo-text">
+          <h1>PMO Monitor</h1>
+          <p>DB Diagnósticos · Automações</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="live-badge"><div class="dot"></div> Monitoramento ativo</div>
+        <button class="btn btn-ghost" onclick="carregarDados()">🔄 Atualizar</button>
+        <button class="btn btn-primary" onclick="abrirCadastro()">＋ Cadastrar Projeto</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-strip" id="stats-strip">
+    <div class="stat-card">
+      <div class="stat-icon si-blue">📁</div>
+      <div class="stat-info">
+        <div class="stat-val blue" id="stat-total">—</div>
+        <div class="stat-label">Projetos monitorados</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-red">⚠️</div>
+      <div class="stat-info">
+        <div class="stat-val red" id="stat-status">—</div>
+        <div class="stat-label">Status atrasado (+7 dias)</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-yellow">🛡️</div>
+      <div class="stat-info">
+        <div class="stat-val yellow" id="stat-risco">—</div>
+        <div class="stat-label">Risco não preenchido</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-green">✅</div>
+      <div class="stat-info">
+        <div class="stat-val green" id="stat-ok">—</div>
+        <div class="stat-label">Projetos em dia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- ALERTAS (main) -->
+    <div>
+      <div class="section">
+        <div class="tabs">
+          <button class="tab active" onclick="mudarTab('todos',this)">
+            Todos os alertas <span class="badge badge-red" id="badge-todos">0</span>
+          </button>
+          <button class="tab" onclick="mudarTab('status',this)">
+            Status <span class="badge badge-red" id="badge-status">0</span>
+          </button>
+          <button class="tab" onclick="mudarTab('risco',this)">
+            Risco <span class="badge badge-yellow" id="badge-risco">0</span>
+          </button>
+          <button class="tab" onclick="mudarTab('ok',this)">
+            Em dia <span class="badge badge-green" id="badge-ok">0</span>
+          </button>
+        </div>
+
+        <div class="alert-list-wrap">
+          <div class="alert-list" id="alert-list">
+            <div class="loading">
+              <div class="spinner"></div>
+              Buscando dados...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Cadastro rápido -->
+      <div class="section" id="form-section" style="display:none;">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Cadastrar Projeto</h2>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="fecharCadastro()">✕</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ID do Projeto no Artia</label>
+          <input class="form-input" id="f-id" type="text" placeholder="Ex: 12345">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome do Projeto</label>
+          <input class="form-input" id="f-nome" type="text" placeholder="Nome do projeto estratégico">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome do GP</label>
+          <input class="form-input" id="f-gp" type="text" placeholder="Nome do gerente de projeto">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Última atualização de status</label>
+          <input class="form-input" id="f-data" type="date">
+          <div style="margin-top:6px; font-size:11px; color:var(--muted);">
+            Data inicial do campo "Últimas Informações"
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" id="f-risco">
+            <label for="f-risco">Campo Restrições já preenchido</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" style="width:100%;" onclick="cadastrarProjeto()">
+            Salvar Projeto
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de projetos -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Projetos</h2>
+            <span class="badge badge-blue" id="badge-proj">0</span>
+          </div>
+          <input class="form-input" id="busca-proj" type="text" placeholder="🔍 Buscar..." style="max-width:130px; padding:5px 10px; font-size:12px;" oninput="filtrarProjetos()">
+        </div>
+        <div class="proj-list" id="proj-list">
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="height:40px;"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+  const WORKER = 'https://pmo-monitor.vitormanu-dl05.workers.dev';
+
+  let todosAlertas = [];
+  let todosOk = [];
+  let todosProjetos = [];
+  let tabAtiva = 'todos';
+
+  // ── INIT ──
+  async function carregarDados() {
+    renderLoading();
+    try {
+      const [alertasRes, projetosRes] = await Promise.all([
+        fetch(`${WORKER}/alertas`),
+        fetch(`${WORKER}/projetos`)
+      ]);
+
+      todosAlertas = await alertasRes.json();
+      const projIds = await projetosRes.json();
+
+      // Busca detalhes de cada projeto para montar a lista lateral
+      const detalhes = [];
+      for (const p of projIds) {
+        try {
+          const r = await fetch(`${WORKER}/alertas`);
+          break; // já temos os alertas, vamos usar eles
+        } catch(e) {}
+      }
+
+      // Projetos sem alerta = em dia
+      const idsComAlerta = new Set(todosAlertas.map(a => a.id));
+      todosOk = projIds.filter(p => !idsComAlerta.has(p.id));
+      todosProjetos = projIds;
+
+      atualizarStats();
+      renderAlertas(tabAtiva);
+      renderProjetos();
+    } catch(e) {
+      renderErro('Erro ao conectar com o Worker. Verifique a URL.');
+    }
+  }
+
+  function atualizarStats() {
+    const total = todosProjetos.length;
+    const comStatus = todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'status')).length;
+    const comRisco = todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'risco')).length;
+    const ok = todosOk.length;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-status').textContent = comStatus;
+    document.getElementById('stat-risco').textContent = comRisco;
+    document.getElementById('stat-ok').textContent = ok;
+
+    document.getElementById('badge-todos').textContent = todosAlertas.length;
+    document.getElementById('badge-status').textContent = comStatus;
+    document.getElementById('badge-risco').textContent = comRisco;
+    document.getElementById('badge-ok').textContent = ok;
+    document.getElementById('badge-proj').textContent = total;
+  }
+
+  function renderAlertas(tab) {
+    const el = document.getElementById('alert-list');
+    let lista = [];
+
+    if (tab === 'todos') lista = todosAlertas;
+    else if (tab === 'status') lista = todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'status'));
+    else if (tab === 'risco') lista = todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'risco'));
+    else if (tab === 'ok') {
+      el.innerHTML = todosOk.length === 0
+        ? `<div class="empty-state"><div class="icon">✅</div><p>Nenhum projeto em dia ainda</p><small>Projetos sem alertas aparecerão aqui</small></div>`
+        : todosOk.map(p => `
+            <div class="alert-item">
+              <div class="alert-dot" style="background:var(--success);box-shadow:0 0 8px rgba(16,185,129,0.5);"></div>
+              <div class="alert-body">
+                <div class="alert-name">${p.nome || p.id}</div>
+                <div class="alert-meta">
+                  <span class="alert-tag" style="background:rgba(16,185,129,0.12);color:#6ee7b7;">Em dia</span>
+                </div>
+              </div>
+            </div>`).join('');
+      return;
+    }
+
+    if (lista.length === 0) {
+      el.innerHTML = `<div class="empty-state"><div class="icon">🎉</div><p>Nenhum alerta nessa categoria</p><small>Tudo certo por aqui!</small></div>`;
+      return;
+    }
+
+    el.innerHTML = lista.map((a, i) => {
+      const temStatus = a.problemas.find(p => p.tipo === 'status');
+      const temRisco = a.problemas.find(p => p.tipo === 'risco');
+      const cor = temStatus ? 'red' : 'yellow';
+
+      return `<div class="alert-item" style="animation-delay:${i * 0.04}s">
+        <div class="alert-dot ${cor}"></div>
+        <div class="alert-body">
+          <div class="alert-name">${a.nome || a.id}</div>
+          <div class="alert-meta">
+            <span class="alert-gp">👤 ${a.gp || '—'}</span>
+            ${temStatus ? `<span class="alert-tag tag-status">⏰ Status atrasado</span>` : ''}
+            ${temRisco ? `<span class="alert-tag tag-risco">🛡️ Sem risco</span>` : ''}
+          </div>
+          ${temStatus ? `<div class="alert-days">${temStatus.mensagem}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderProjetos(filtro = '') {
+    const el = document.getElementById('proj-list');
+    const idsComAlerta = new Set(todosAlertas.map(a => a.id));
+    let lista = todosProjetos;
+
+    if (filtro) {
+      lista = lista.filter(p => (p.nome || p.id).toLowerCase().includes(filtro.toLowerCase()));
+    }
+
+    if (lista.length === 0) {
+      el.innerHTML = `<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto cadastrado</p><small>Clique em "Cadastrar Projeto" para começar</small></div>`;
+      return;
+    }
+
+    const idsComStatus = new Set(todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'status')).map(a => a.id));
+    const idsComRisco = new Set(todosAlertas.filter(a => a.problemas.some(p => p.tipo === 'risco')).map(a => a.id));
+
+    el.innerHTML = lista.map(p => {
+      const temStatus = idsComStatus.has(p.id);
+      const temRisco = idsComRisco.has(p.id);
+      const okStyle = !temStatus && !temRisco;
+
+      return `<div class="proj-item">
+        <div class="proj-item-info">
+          <div class="proj-item-name">${p.nome || p.id}</div>
+        </div>
+        <div class="proj-status-dots">
+          <div class="mini-dot" title="Status" style="background:${temStatus ? 'var(--danger)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temStatus ? 'box-shadow:0 0 6px rgba(239,68,68,0.5)' : ''}"></div>
+          <div class="mini-dot" title="Risco" style="background:${temRisco ? 'var(--warning)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temRisco ? 'box-shadow:0 0 6px rgba(245,158,11,0.5)' : ''}"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderLoading() {
+    document.getElementById('alert-list').innerHTML = `<div class="loading"><div class="spinner"></div>Buscando dados...</div>`;
+    document.getElementById('proj-list').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  }
+
+  function renderErro(msg) {
+    document.getElementById('alert-list').innerHTML = `<div class="empty-state"><div class="icon">❌</div><p>${msg}</p></div>`;
+  }
+
+  // ── TABS ──
+  function mudarTab(tab, el) {
+    tabAtiva = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderAlertas(tab);
+  }
+
+  // ── CADASTRO ──
+  function abrirCadastro() {
+    document.getElementById('form-section').style.display = 'block';
+    document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+    // Default date = hoje
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('f-data').value = hoje;
+  }
+
+  function fecharCadastro() {
+    document.getElementById('form-section').style.display = 'none';
+  }
+
+  async function cadastrarProjeto() {
+    const id = document.getElementById('f-id').value.trim();
+    const nome = document.getElementById('f-nome').value.trim();
+    const gp = document.getElementById('f-gp').value.trim();
+    const data = document.getElementById('f-data').value;
+    const risco = document.getElementById('f-risco').checked;
+
+    if (!id || !nome || !gp) {
+      toast('Preencha ID, nome e GP', 'error'); return;
+    }
+
+    try {
+      const res = await fetch(`${WORKER}/projetos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id, nome, gp,
+          ultimasInfo_atualizado: data ? new Date(data).toISOString() : null,
+          restricoes_preenchido: risco
+        })
+      });
+
+      if (res.ok) {
+        toast('Projeto cadastrado com sucesso!', 'success');
+        fecharCadastro();
+        document.getElementById('f-id').value = '';
+        document.getElementById('f-nome').value = '';
+        document.getElementById('f-gp').value = '';
+        document.getElementById('f-risco').checked = false;
+        setTimeout(carregarDados, 500);
+      } else {
+        toast('Erro ao cadastrar projeto', 'error');
+      }
+    } catch(e) {
+      toast('Erro de conexão', 'error');
+    }
+  }
+
+  // ── BUSCA ──
+  function filtrarProjetos() {
+    const v = document.getElementById('busca-proj').value;
+    renderProjetos(v);
+  }
+
+  // ── TOAST ──
+  function toast(msg, tipo = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = tipo === 'success' ? '✅ ' + msg : '❌ ' + msg;
+    el.className = 'show ' + tipo;
+    setTimeout(() => { el.className = ''; }, 3000);
+  }
+
+  // ── INIT ──
+  carregarDados();
+  setInterval(carregarDados, 5 * 60 * 1000); // Atualiza a cada 5 min
+</script>
+</body>
+</html>
