@@ -406,7 +406,18 @@
 
   .proj-item-gp { font-size: 11px; color: var(--muted2); margin-top: 2px; }
 
-  .proj-status-dots { display: flex; gap: 4px; flex-shrink: 0; }
+  .proj-status-dots { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+  .btn-excluir {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--muted); cursor: pointer; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; opacity: 0;
+  }
+
+  .proj-item:hover .btn-excluir { opacity: 1; }
+  .btn-excluir:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
 
   .mini-dot {
     width: 8px; height: 8px; border-radius: 50%;
@@ -739,6 +750,7 @@
         <div class="proj-status-dots">
           <div class="mini-dot" title="Status" style="background:${temStatus ? 'var(--danger)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temStatus ? 'box-shadow:0 0 6px rgba(239,68,68,0.5)' : ''}"></div>
           <div class="mini-dot" title="Risco" style="background:${temRisco ? 'var(--warning)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temRisco ? 'box-shadow:0 0 6px rgba(245,158,11,0.5)' : ''}"></div>
+          <button class="btn-excluir" title="Excluir projeto" onclick="excluirProjeto('${p.id}', '${(p.nome || p.id).replace(/'/g, "\\'")}')">✕</button>
         </div>
       </div>`;
     }).join('');
@@ -824,6 +836,22 @@
     el.textContent = tipo === 'success' ? '✅ ' + msg : '❌ ' + msg;
     el.className = 'show ' + tipo;
     setTimeout(() => { el.className = ''; }, 3000);
+  }
+
+  // ── EXCLUIR ──
+  async function excluirProjeto(id, nome) {
+    if (!confirm(`Excluir "${nome}"?\nEssa ação não pode ser desfeita.`)) return;
+    try {
+      const res = await fetch(`${WORKER}/projetos/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast(`"${nome}" excluído`, 'success');
+        setTimeout(carregarDados, 500);
+      } else {
+        toast('Erro ao excluir', 'error');
+      }
+    } catch(e) {
+      toast('Erro de conexão', 'error');
+    }
   }
 
   // ── INIT ──
