@@ -172,6 +172,23 @@
   #toast.success{border-color:rgba(16,185,129,0.4);color:#6ee7b7;}
   #toast.error{border-color:rgba(239,68,68,0.4);color:#fca5a5;}
 
+  /* QUASE VENCENDO */
+  .pbadge-orange{background:rgba(249,115,22,0.12);color:#fdba74;border:1px solid rgba(249,115,22,0.25);}
+
+  /* RAIO-X MODAL */
+  .raio-x-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;}
+  .raio-x-overlay.open{display:flex;}
+  .raio-x-box{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:520px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,0.5);animation:modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;}
+  .raio-x-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .raio-x-head h3{font-size:15px;font-weight:600;}
+  .raio-x-body{padding:20px 24px;}
+  .raio-x-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .raio-x-item{padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
+  .raio-x-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+  .raio-x-val{font-size:13px;font-weight:500;color:var(--text);word-break:break-word;}
+  .raio-x-val.ok{color:#6ee7b7;}.raio-x-val.alert{color:#fca5a5;}.raio-x-val.warn{color:#fcd34d;}.raio-x-val.muted{color:var(--muted2);}
+  .raio-x-foot{padding:14px 24px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
+
   @media(max-width:900px){
     .insights-grid{grid-template-columns:1fr;}
     .stats-strip{grid-template-columns:repeat(2,1fr);}
@@ -277,6 +294,22 @@
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="salvarProjeto()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RAIO-X MODAL -->
+<div class="raio-x-overlay" id="raio-x-overlay" onclick="fecharRaioX(event)">
+  <div class="raio-x-box">
+    <div class="raio-x-head">
+      <h3 id="raio-x-titulo">📋 Detalhes do Projeto</h3>
+      <button class="modal-close" onclick="document.getElementById('raio-x-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="raio-x-body">
+      <div class="raio-x-grid" id="raio-x-grid"></div>
+    </div>
+    <div class="raio-x-foot">
+      <button class="btn btn-ghost" onclick="document.getElementById('raio-x-overlay').classList.remove('open')">Fechar</button>
     </div>
   </div>
 </div>
@@ -419,14 +452,35 @@
   function renderListaProjetos(lista, el) {
     el.innerHTML=lista.map(p=>{
       const a=p.alerta;
+      const det=projetosDetalhes[p.id]||{};
       const temStatus=a?.problemas.find(pr=>pr.tipo==='status');
       const temAtencao=a?.problemas.find(pr=>pr.tipo==='risco');
       const emDia=!a;
-      const dotColor=temStatus?'var(--danger)':temAtencao?'var(--warning)':'var(--success)';
-      const dotShadow=temStatus?'rgba(239,68,68,0.5)':temAtencao?'rgba(245,158,11,0.5)':'rgba(16,185,129,0.5)';
-      const badges=emDia?`<span class="pbadge pbadge-green">✓ Em dia</span>`
+
+      // Calcular dias desde última atualização
+      const ultData=det.ultimasInfo_atualizado;
+      let diasStr='Nunca atualizado';
+      let diasNum=null;
+      if(ultData){
+        const dias=Math.floor((new Date()-new Date(ultData))/(1000*60*60*24));
+        diasNum=dias;
+        const dtFmt=new Date(ultData).toLocaleDateString('pt-BR');
+        diasStr=`Atualizado em ${dtFmt} · ${dias} dia${dias!==1?'s':''} atrás`;
+      }
+      const quaseVencendo=emDia && diasNum!==null && diasNum>=5 && diasNum<=7;
+
+      const dotColor=temStatus?'var(--danger)':quaseVencendo?'#f97316':temAtencao?'var(--warning)':'var(--success)';
+      const dotShadow=temStatus?'rgba(239,68,68,0.5)':quaseVencendo?'rgba(249,115,22,0.5)':temAtencao?'rgba(245,158,11,0.5)':'rgba(16,185,129,0.5)';
+
+      const badges=emDia
+        ?`<span class="pbadge ${quaseVencendo?'pbadge-orange':'pbadge-green'}">${quaseVencendo?'⚡ Vence em breve':'✓ Em dia'}</span>`
         :`${temStatus?`<span class="pbadge pbadge-red">⏰ Status atrasado</span>`:''}${temAtencao?`<span class="pbadge pbadge-yellow">⚠️ Sem pontos de atenção</span>`:''}`;
+
       const nomeEsc=(p.nome||p.id).replace(/'/g,"\\'");
+      const gp=det.gp||a?.gp||'—';
+      const statusReportVal=temStatus?temStatus.mensagem:`Em dia · ${diasStr}`;
+      const statusReportClass=temStatus?'alert':quaseVencendo?'warn':'ok';
+
       return `<div class="projeto-row"><div class="projeto-main" onclick="toggleDetalhe('${p.id}')">
         <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};"></div><span>${p.nome||p.id}</span></div>
         <div class="projeto-badges">${badges}</div>
@@ -437,12 +491,15 @@
       </div>
       <div class="projeto-detalhe" id="detalhe-${p.id}">
         <div class="detalhe-grid">
-          <div><div class="detalhe-label">Gerente de Projeto</div><div class="detalhe-val">${projetosDetalhes[p.id]?.gp||a?.gp||'—'}</div></div>
-          <div><div class="detalhe-label">Status do Report</div><div class="detalhe-val ${temStatus?'alert':'ok'}">${temStatus?temStatus.mensagem:'Em dia'}</div></div>
+          <div><div class="detalhe-label">Gerente de Projeto</div><div class="detalhe-val">${gp}</div></div>
+          <div><div class="detalhe-label">Status do Report</div><div class="detalhe-val ${statusReportClass}" style="font-size:12px">${statusReportVal}</div></div>
           <div><div class="detalhe-label">Pontos de Atenção</div><div class="detalhe-val ${temAtencao?'warn':'ok'}">${temAtencao?'Não preenchido':'Preenchido'}</div></div>
           <div><div class="detalhe-label">ID no Artia</div><div class="detalhe-val muted">${p.id}</div></div>
         </div>
-        <div class="detalhe-actions"><button class="btn-excluir-full" onclick="excluirProjeto('${p.id}','${nomeEsc}')">🗑️ Excluir projeto</button></div>
+        <div class="detalhe-actions">
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;margin-right:8px;" onclick="abrirRaioX('${p.id}','${nomeEsc}')">📋 Ver detalhes</button>
+          <button class="btn-excluir-full" onclick="excluirProjeto('${p.id}','${nomeEsc}')">🗑️ Excluir projeto</button>
+        </div>
       </div></div>`;
     }).join('');
   }
@@ -577,6 +634,63 @@
     el.textContent=tipo==='success'?'✅ '+msg:'❌ '+msg;
     el.className='show '+tipo;
     setTimeout(()=>{el.className='';},3000);
+  }
+
+  function abrirRaioX(id, nome) {
+    const det=projetosDetalhes[id]||{};
+    const a=alertasMap[id];
+    document.getElementById('raio-x-titulo').textContent=`📋 ${nome}`;
+
+    const ultData=det.ultimasInfo_atualizado;
+    let ultDataStr='Nunca atualizado';
+    let diasStr='—';
+    if(ultData){
+      const dias=Math.floor((new Date()-new Date(ultData))/(1000*60*60*24));
+      ultDataStr=new Date(ultData).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+      diasStr=`${dias} dia${dias!==1?'s':''} atrás`;
+    }
+
+    const syncData=det.ultima_atualizacao;
+    const syncStr=syncData?new Date(syncData).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+
+    const temStatus=a?.problemas.find(p=>p.tipo==='status');
+    const temAtencao=a?.problemas.find(p=>p.tipo==='risco');
+
+    document.getElementById('raio-x-grid').innerHTML=`
+      <div class="raio-x-item">
+        <div class="raio-x-label">Gerente de Projeto</div>
+        <div class="raio-x-val">${det.gp||a?.gp||'—'}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">ID no Artia</div>
+        <div class="raio-x-val muted">${id}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Última atualização de status</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${ultDataStr}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Dias desde atualização</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${diasStr}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Status do Report</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${temStatus?temStatus.mensagem:'Em dia ✓'}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Pontos de Atenção</div>
+        <div class="raio-x-val ${temAtencao?'warn':'ok'}">${temAtencao?'Não preenchido ✗':'Preenchido ✓'}</div>
+      </div>
+      <div class="raio-x-item" style="grid-column:1/-1">
+        <div class="raio-x-label">Última sincronização com Artia</div>
+        <div class="raio-x-val muted">${syncStr}</div>
+      </div>
+    `;
+    document.getElementById('raio-x-overlay').classList.add('open');
+  }
+
+  function fecharRaioX(e) {
+    if(e.target.id==='raio-x-overlay') document.getElementById('raio-x-overlay').classList.remove('open');
   }
 
   carregarDados();
