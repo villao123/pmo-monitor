@@ -80,10 +80,12 @@
   .projetos-header { display: grid; grid-template-columns: 1fr 200px 40px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
 
   /* ROW */
-  .projeto-row { border-bottom: 1px solid var(--border); }
+  .projeto-row { border-bottom: 1px solid var(--border); transition: background 0.15s, border-left 0.15s; }
+  .projeto-row:nth-child(even) { background: rgba(255,255,255,0.013); }
   .projeto-row:last-child { border-bottom: none; }
-  .projeto-main { display: grid; grid-template-columns: 1fr 200px 40px; align-items: center; padding: 14px 20px; cursor: pointer; transition: background 0.15s; gap: 12px; }
-  .projeto-main:hover { background: rgba(255,255,255,0.02); }
+  .projeto-row.open-row { background: rgba(59,130,246,0.05) !important; border-left: 3px solid var(--accent); }
+  .projeto-main { display: grid; grid-template-columns: 1fr 200px 40px; align-items: center; padding: 16px 20px; cursor: pointer; transition: background 0.15s; gap: 12px; }
+  .projeto-main:hover { background: rgba(59,130,246,0.04); }
   .projeto-nome { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; min-width: 0; }
   .projeto-nome span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
@@ -353,8 +355,23 @@
   }
 
   function toggleDetalhe(id) {
-    document.getElementById(`detalhe-${id}`).classList.toggle('open');
-    document.getElementById(`expand-${id}`).classList.toggle('open');
+    const detalhe = document.getElementById(`detalhe-${id}`);
+    const btn = document.getElementById(`expand-${id}`);
+    const row = detalhe.closest('.projeto-row');
+    const isOpen = detalhe.classList.contains('open');
+
+    // Fecha todos os outros
+    document.querySelectorAll('.projeto-detalhe.open').forEach(d => {
+      if (d.id !== `detalhe-${id}`) {
+        d.classList.remove('open');
+        document.getElementById(`expand-${d.id.replace('detalhe-','')}`).classList.remove('open');
+        d.closest('.projeto-row').classList.remove('open-row');
+      }
+    });
+
+    detalhe.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    row.classList.toggle('open-row', !isOpen);
   }
 
   function filtrarTab(el, filtro) {
