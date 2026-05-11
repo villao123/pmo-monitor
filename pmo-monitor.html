@@ -500,7 +500,7 @@
       <div class="stat-icon si-yellow">🛡️</div>
       <div class="stat-info">
         <div class="stat-val yellow" id="stat-risco">—</div>
-        <div class="stat-label">Risco não preenchido</div>
+        <div class="stat-label">Sem pontos de atenção</div>
       </div>
     </div>
     <div class="stat-card">
@@ -577,7 +577,7 @@
         <div class="form-group">
           <div class="form-check">
             <input type="checkbox" id="f-risco">
-            <label for="f-risco">Campo Restrições já preenchido</label>
+            <label for="f-risco">Pontos de atenção preenchidos</label>
           </div>
         </div>
         <div class="form-group">
@@ -712,7 +712,7 @@
           <div class="alert-meta">
             <span class="alert-gp">👤 ${a.gp || '—'}</span>
             ${temStatus ? `<span class="alert-tag tag-status">⏰ Status atrasado</span>` : ''}
-            ${temRisco ? `<span class="alert-tag tag-risco">🛡️ Sem risco</span>` : ''}
+            ${temRisco ? `<span class="alert-tag tag-risco">⚠️ Sem pontos de atenção</span>` : ''}
           </div>
           ${temStatus ? `<div class="alert-days">${temStatus.mensagem}</div>` : ''}
         </div>
@@ -748,7 +748,7 @@
         </div>
         <div class="proj-status-dots">
           <div class="mini-dot" title="Status" style="background:${temStatus ? 'var(--danger)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temStatus ? 'box-shadow:0 0 6px rgba(239,68,68,0.5)' : ''}"></div>
-          <div class="mini-dot" title="Risco" style="background:${temRisco ? 'var(--warning)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temRisco ? 'box-shadow:0 0 6px rgba(245,158,11,0.5)' : ''}"></div>
+          <div class="mini-dot" title="Pontos de Atenção" style="background:${temRisco ? 'var(--warning)' : okStyle ? 'var(--success)' : 'var(--border2)'};${temRisco ? 'box-shadow:0 0 6px rgba(245,158,11,0.5)' : ''}"></div>
           <button class="btn-excluir" title="Excluir projeto" onclick="excluirProjeto('${p.id}', '${(p.nome || p.id).replace(/'/g, "\\'")}')">✕</button>
         </div>
       </div>`;
