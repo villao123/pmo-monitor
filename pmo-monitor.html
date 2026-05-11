@@ -297,7 +297,7 @@
 <script>
   const WORKER = 'https://pmo-monitor.vitormanu-dl05.workers.dev';
   let todosAlertas=[], todosOk=[], todosProjetos=[], alertasMap={};
-  let filtroAtivo='todos', confirmCallback=null;
+  let filtroAtivo='todos', confirmCallback=null, projetosDetalhes={}, gpFiltro=null;
 
   async function carregarDados() {
     document.getElementById('proj-list').innerHTML=`<div class="loading"><div class="spinner"></div>Buscando dados...</div>`;
@@ -310,6 +310,17 @@
       const idsComAlerta=new Set(todosAlertas.map(a=>a.id));
       todosOk=projIds.filter(p=>!idsComAlerta.has(p.id));
       todosProjetos=projIds;
+
+      // Busca detalhes completos (inclui GP de projetos em dia)
+      projetosDetalhes={};
+      await Promise.all(projIds.map(async p => {
+        try {
+          const r=await fetch(`${WORKER}/debug/${p.id}`);
+          const d=await r.json();
+          projetosDetalhes[p.id]=d;
+        } catch(e) {}
+      }));
+
       atualizarStats();
       renderInsights();
       renderProjetos();
@@ -361,9 +372,9 @@
     document.getElementById('gp-ranking').innerHTML=gpSorted.length===0
       ?`<div style="color:var(--muted);font-size:12px;">Nenhuma pendência</div>`
       :gpSorted.map(([gp,count])=>`
-        <div class="gp-item">
+        <div class="gp-item" style="cursor:pointer;" onclick="filtrarPorGP('${gp.replace(/'/g,"\\'")}')" title="Clique para ver pendências de ${gp.replace(/'/g,"\\'")}">
           <div class="gp-item-top">
-            <span class="gp-name">${gp}</span>
+            <span class="gp-name" style="color:var(--accent)">${gp}</span>
             <span class="gp-count">${count} pendência${count>1?'s':''}</span>
           </div>
           <div class="gp-bar-bg"><div class="gp-bar" style="width:${(count/maxGp)*100}%"></div></div>
@@ -392,6 +403,7 @@
   }
 
   function renderProjetos() {
+    gpFiltro=null;
     const el=document.getElementById('proj-list');
     const busca=document.getElementById('busca').value.toLowerCase();
     let lista=todosProjetos.map(p=>({...p,alerta:alertasMap[p.id]}));
@@ -401,6 +413,10 @@
     if(busca) lista=lista.filter(p=>(p.nome||p.id).toLowerCase().includes(busca));
     if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p></div>`;return;}
 
+    renderListaProjetos(lista, el);
+  }
+
+  function renderListaProjetos(lista, el) {
     el.innerHTML=lista.map(p=>{
       const a=p.alerta;
       const temStatus=a?.problemas.find(pr=>pr.tipo==='status');
@@ -421,7 +437,7 @@
       </div>
       <div class="projeto-detalhe" id="detalhe-${p.id}">
         <div class="detalhe-grid">
-          <div><div class="detalhe-label">Gerente de Projeto</div><div class="detalhe-val">${a?.gp||'—'}</div></div>
+          <div><div class="detalhe-label">Gerente de Projeto</div><div class="detalhe-val">${projetosDetalhes[p.id]?.gp||a?.gp||'—'}</div></div>
           <div><div class="detalhe-label">Status do Report</div><div class="detalhe-val ${temStatus?'alert':'ok'}">${temStatus?temStatus.mensagem:'Em dia'}</div></div>
           <div><div class="detalhe-label">Pontos de Atenção</div><div class="detalhe-val ${temAtencao?'warn':'ok'}">${temAtencao?'Não preenchido':'Preenchido'}</div></div>
           <div><div class="detalhe-label">ID no Artia</div><div class="detalhe-val muted">${p.id}</div></div>
@@ -443,6 +459,42 @@
       d.closest('.projeto-row')?.classList.remove('open-row');
     });
     if(!isOpen){detalhe.classList.add('open');btn.classList.add('open');row.classList.add('open-row');}
+  }
+
+  function filtrarPorGP(gp) {
+    gpFiltro = gpFiltro === gp ? null : gp;
+    // Scroll to list
+    document.querySelector('.projetos-section').scrollIntoView({behavior:'smooth'});
+    // Update busca field to show filter
+    const busca = document.getElementById('busca');
+    busca.value = gpFiltro ? `GP: ${gp}` : '';
+    // Reset to todos tab
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active','active-red','active-yellow','active-green'));
+    document.querySelector('.filter-tab').classList.add('active');
+    filtroAtivo='todos';
+    renderProjetosComGP();
+  }
+
+  function renderProjetosComGP() {
+    const el=document.getElementById('proj-list');
+    let lista=todosProjetos.map(p=>({...p,alerta:alertasMap[p.id]}));
+    if(filtroAtivo==='status') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='status'));
+    else if(filtroAtivo==='atencao') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='risco'));
+    else if(filtroAtivo==='ok') lista=lista.filter(p=>!p.alerta);
+
+    // Filtro por GP
+    if(gpFiltro) {
+      lista=lista.filter(p=>{
+        const gp=projetosDetalhes[p.id]?.gp||p.alerta?.gp||'';
+        return gp===gpFiltro;
+      });
+    }
+
+    const busca=document.getElementById('busca').value.toLowerCase();
+    if(busca && !busca.startsWith('gp: ')) lista=lista.filter(p=>(p.nome||p.id).toLowerCase().includes(busca));
+
+    if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p>${gpFiltro?`<small>Filtrado por GP: ${gpFiltro} — <a href="#" onclick="filtrarPorGP('');return false;" style="color:var(--accent)">Limpar filtro</a></small>`:''}</div>`;return;}
+    renderListaProjetos(lista, el);
   }
 
   function filtrarTab(el,filtro) {
@@ -476,7 +528,7 @@
     document.getElementById('f-id').value=id;
     document.getElementById('f-id').disabled=true;
     document.getElementById('f-nome').value=nome;
-    document.getElementById('f-gp').value=alerta?.gp||'';
+    document.getElementById('f-gp').value=projetosDetalhes[id]?.gp||alerta?.gp||'';
     document.getElementById('f-data').value=new Date().toISOString().split('T')[0];
     document.getElementById('f-atencao').checked=alerta?!alerta.problemas.some(p=>p.tipo==='risco'):true;
     document.getElementById('modal-overlay').classList.add('open');
