@@ -266,7 +266,7 @@
     </div>
     <div class="search-box">
       <span style="color:var(--muted)">🔍</span>
-      <input type="text" placeholder="Buscar projeto..." id="busca" oninput="renderProjetos()">
+      <input type="text" placeholder="Buscar por projeto, GP ou ID..." id="busca" oninput="renderProjetos()">
     </div>
   </div>
 
@@ -443,7 +443,13 @@
     if(filtroAtivo==='status') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='status'));
     else if(filtroAtivo==='atencao') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='risco'));
     else if(filtroAtivo==='ok') lista=lista.filter(p=>!p.alerta);
-    if(busca) lista=lista.filter(p=>(p.nome||p.id).toLowerCase().includes(busca));
+    if(busca) lista=lista.filter(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=(det.gp||p.alerta?.gp||'').toLowerCase();
+      const nome=(p.nome||'').toLowerCase();
+      const id=(p.id||'').toLowerCase();
+      return nome.includes(busca)||gp.includes(busca)||id.includes(busca);
+    });
     if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p></div>`;return;}
 
     renderListaProjetos(lista, el);
@@ -548,7 +554,13 @@
     }
 
     const busca=document.getElementById('busca').value.toLowerCase();
-    if(busca && !busca.startsWith('gp: ')) lista=lista.filter(p=>(p.nome||p.id).toLowerCase().includes(busca));
+    if(busca && !busca.startsWith('gp: ')) lista=lista.filter(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=(det.gp||p.alerta?.gp||'').toLowerCase();
+      const nome=(p.nome||'').toLowerCase();
+      const id=(p.id||'').toLowerCase();
+      return nome.includes(busca)||gp.includes(busca)||id.includes(busca);
+    });
 
     if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p>${gpFiltro?`<small>Filtrado por GP: ${gpFiltro} — <a href="#" onclick="filtrarPorGP('');return false;" style="color:var(--accent)">Limpar filtro</a></small>`:''}</div>`;return;}
     renderListaProjetos(lista, el);
