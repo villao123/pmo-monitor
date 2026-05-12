@@ -603,7 +603,7 @@
     if(!id||!nome||!gp){toast('Preencha ID, nome e GP','error');return;}
     try {
       const res=await fetch(`${WORKER}/projetos`,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({id,nome,gp,ultimasInfo_atualizado:data?new Date(data).toISOString():null,restricoes_preenchido:atencao})});
+        body:JSON.stringify({id,nome,gp,ultimasInfo_atualizado:data?dataLocalParaISO(data):null,restricoes_preenchido:atencao})});
       if(res.ok){toast('Projeto salvo!','success');fecharModal();setTimeout(carregarDados,500);}
       else toast('Erro ao salvar','error');
     } catch(e){toast('Erro de conexão','error');}
@@ -691,6 +691,12 @@
 
   function fecharRaioX(e) {
     if(e.target.id==='raio-x-overlay') document.getElementById('raio-x-overlay').classList.remove('open');
+  }
+
+  function dataLocalParaISO(dataStr) {
+    // Converte 'YYYY-MM-DD' para ISO sem perder o dia por fuso horário
+    const [y,m,d] = dataStr.split('-').map(Number);
+    return new Date(y, m-1, d, 12, 0, 0).toISOString();
   }
 
   carregarDados();
