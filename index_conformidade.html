@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo DB · PMO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0c10;
+  --s0:        #111318;
+  --s1:        #111318;
+  --s2:        #16191f;
+  --s3:        #1c2128;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #f0f4ff;
+  --text2:     #6b8299;
+  --text3:     #3d4f63;
+
+  --blue:      #00e5a0;
+  --blue-glow: rgba(0,229,160,0.15);
+
+  --green:        #00e5a0;
+  --green-dim:    rgba(0,229,160,0.08);
+  --green-border: rgba(0,229,160,0.2);
+  --green-text:   #6ee7b7;
+
+  --red:        #ef4444;
+  --red-dim:    rgba(239,68,68,0.08);
+  --red-border: rgba(239,68,68,0.2);
+  --red-text:   #f87171;
+
+  --gray-dim:    rgba(255,255,255,0.03);
+  --gray-border: rgba(255,255,255,0.06);
+  --gray-text:   #3d4458;
+
+  --amber:      #f59e0b;
+  --amber-dim:  rgba(245,158,11,0.08);
+}
+
+/* ── Light Theme ── */
+body.light {
+  --bg:        #f5f6f8;
+  --s0:        #ffffff;
+  --s1:        #ffffff;
+  --s2:        #f5f6f8;
+  --s3:        #eceef2;
+  --border:    rgba(0,0,0,0.08);
+  --border2:   rgba(0,0,0,0.14);
+  --text:      #1a1f36;
+  --text2:     #3d4461;
+  --text3:     #8792a2;
+
+  --blue:      #2bbcb0;
+  --blue-glow: rgba(43,188,176,0.12);
+
+  --green:        #0d7a4e;
+  --green-dim:    rgba(13,122,78,0.10);
+  --green-border: rgba(13,122,78,0.30);
+  --green-text:   #0d7a4e;
+
+  --red:        #df1b41;
+  --red-dim:    rgba(223,27,65,0.08);
+  --red-border: rgba(223,27,65,0.25);
+  --red-text:   #df1b41;
+
+  --gray-dim:    rgba(0,0,0,0.04);
+  --gray-border: rgba(0,0,0,0.08);
+  --gray-text:   #8792a2;
+
+  --amber:      #c4620a;
+  --amber-dim:  rgba(196,98,10,0.08);
+}
+
+/* ── Light Header — dark teal igual ao escuro ── */
+body.light .header{
+  background:linear-gradient(90deg,#0d2e2b 0%,#1a4a44 100%);
+  border-bottom:1px solid rgba(0,0,0,0.20);
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+}
+body.light .logo-text{color:#fff!important}
+body.light #companyName{color:#fff!important}
+body.light .logo-sub{color:rgba(255,255,255,0.6)!important}
+body.light .search-input{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.22);color:#fff}
+body.light .search-input::placeholder{color:rgba(255,255,255,0.5)}
+body.light .search-input:focus{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.5)}
+body.light .search-icon{color:rgba(255,255,255,0.55)}
+body.light .btn-primary{background:#2bbcb0;color:#fff;box-shadow:0 2px 8px rgba(43,188,176,.4)}
+body.light .btn-primary:hover{background:#25a99e;transform:translateY(-1px)}
+body.light .btn-pdf{color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.28)}
+body.light .btn-pdf:hover{background:rgba(255,255,255,0.1);color:#fff}
+body.light .theme-toggle{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22);color:rgba(255,255,255,0.8)}
+body.light .theme-toggle:hover{background:rgba(255,255,255,0.20)}
+body.light .notif-btn{background:rgba(255,255,255,0.10)!important;border-color:rgba(255,255,255,0.22)!important;color:#fff!important}
+body.light .notif-btn.has-pending{background:rgba(255,255,255,0.18)!important}
+body.light .legend-icon{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22);color:#fff}
+body.light .hdivider{background:rgba(255,255,255,0.15)}
+body.light .logo-img-area{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25)}
+
+/* ── Light KPIs ── */
+body.light .kpi-bar{background:#f5f6f8;border-bottom:1px solid rgba(0,0,0,0.07)}
+body.light .kpi-card{background:#fff;border-color:rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+body.light .kpi-progress{background:#fff;border-color:rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+body.light .kpi-label{color:#8792a2;font-weight:600;letter-spacing:.6px}
+body.light .kpi-hint{color:#aab0bc}
+body.light .kpi-progress-hint{color:#aab0bc}
+body.light .kpi-progress-title{color:#8792a2;font-weight:600;letter-spacing:.6px}
+body.light .kpi-num.c-green{color:#0d7a4e}
+body.light .kpi-num.c-red{color:#df1b41}
+body.light .kpi-num.c-blue{color:#2bbcb0}
+body.light .kpi-num.c-amber{color:#c4620a}
+body.light .kpi-progress-pct{color:#0d7a4e}
+body.light .progress-track{background:#e8edf2}
+body.light .progress-fill{background:linear-gradient(90deg,#0d7a4e,#2bbcb0)}
+
+/* ── Light Section / Table ── */
+body.light .section-title{color:#1a1f36;font-weight:700}
+body.light .section-badge{background:#e8f8f5;border-color:rgba(43,188,176,0.3);color:#0d6b60;font-weight:600}
+body.light .exec-section-label{color:#8792a2;font-weight:700;letter-spacing:.8px}
+body.light .exec-table{border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+body.light .exec-table th{color:#8792a2;border-bottom:1px solid rgba(0,0,0,0.08);font-weight:700;letter-spacing:.6px;background:#f5f6f8;padding:12px 16px}
+body.light .exec-table td{border-bottom-color:rgba(0,0,0,0.06);background:#fff}
+body.light .exec-table tbody tr:hover td{background:#f8f9ff}
+body.light .exec-gp{color:#8792a2;font-size:11px}
+body.light .exec-track{background:#e8edf2}
+body.light .exec-dim{color:#b0b8c8}
+
+/* ── Light Project Cards ── */
+body.light .project-area{background:#f5f6f8}
+body.light .project-card{background:#fff;border-color:rgba(0,0,0,0.08);box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+body.light .project-card:hover{border-color:rgba(43,188,176,0.4);box-shadow:0 3px 12px rgba(43,188,176,0.10)}
+body.light .project-card.focused{border-color:rgba(43,188,176,0.55);box-shadow:0 0 0 3px rgba(43,188,176,0.10)}
+body.light .proj-name{color:#1a1f36;font-weight:600}
+body.light .proj-gp{color:#8792a2}
+body.light .proj-footer{background:#fafbfc;border-top-color:rgba(0,0,0,0.06)}
+body.light .phase-tag{color:#aab0bc}
+body.light .chevron-icon{color:#aab0bc}
+
+/* ── Light Situação Badges — vibrantes como Plaky ── */
+body.light .sit-andamento{background:#d4f5ec;border-color:#2bbcb0;color:#076b52;font-weight:600}
+body.light .sit-standby{background:#fff0d4;border-color:#f59e0b;color:#834d00;font-weight:600}
+body.light .sit-inviavel{background:#ffe4e8;border-color:#df1b41;color:#9b0e28;font-weight:600}
+body.light .sit-finalizado{background:#ede9fe;border-color:#7c3aed;color:#4c1d95;font-weight:600}
+body.light .sit-aguardando{background:#f0f4ff;border-color:#6366f1;color:#3730a3;font-weight:600}
+body.light .sit-cancelado{background:#f1f3f5;border-color:#9ca3af;color:#374151;font-weight:600}
+
+/* ── Light Health ── */
+body.light .health-ok{background:#d4f5ec;border-color:#2bbcb0;color:#076b52;font-weight:600}
+body.light .health-warn{background:#fff0d4;border-color:#f59e0b;color:#834d00;font-weight:600}
+body.light .health-crit{background:#ffe4e8;border-color:#df1b41;color:#9b0e28;font-weight:600}
+
+/* ── Light Chips ── */
+body.light .chip-ok{background:#d4f5ec;border-color:#2bbcb0;color:#076b52;font-weight:500}
+body.light .chip-nok{background:#ffe4e8;border-color:#df1b41;color:#9b0e28;font-weight:500}
+body.light .chip-sec{background:#f1f3f5;border-color:#d1d5db;color:#6b7280}
+body.light .chip-sec:hover{color:#374151}
+body.light .chip-sec-ok{background:#ecfdf5;border-color:#6ee7b7;color:#065f46}
+
+/* ── Light Side Panel ── */
+body.light .side-panel{background:#fff;border-color:rgba(0,0,0,0.10);box-shadow:-8px 0 32px rgba(0,0,0,0.10)}
+body.light .panel-project-name{color:#1a1f36;font-weight:700}
+body.light .panel-kpi{background:#f5f6f8;border-color:rgba(0,0,0,0.08)}
+body.light .panel-kpi-label{color:#8792a2;font-weight:600}
+body.light .panel-section-title{color:#aab0bc;border-bottom-color:rgba(0,0,0,0.07)}
+body.light .panel-doc-name{color:#3d4461}
+body.light .pdot{opacity:.9}
+
+/* ── Light Archived / Misc ── */
+body.light .arch-toggle{color:#8792a2;border-color:rgba(0,0,0,0.08)}
+body.light .arch-toggle:hover{color:#3d4461}
+body.light .arch-badge{background:#f1f3f5;border-color:rgba(0,0,0,0.09);color:#8792a2}
+body.light .icon-btn{color:#aab0bc}
+body.light .icon-btn:hover{color:#1a1f36;background:#f1f3f5}
+body.light .icon-btn.info:hover{color:#2bbcb0;background:rgba(43,188,176,0.08)}
+body.light .icon-btn.arch:hover{color:#c4620a;background:rgba(196,98,10,0.08)}
+body.light .icon-btn.danger:hover{color:#df1b41;background:rgba(223,27,65,0.08)}
+
+/* ── Light Notif Panel ── */
+body.light .notif-panel{background:#fff;border-color:rgba(0,0,0,0.10);box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+body.light .notif-header{border-color:rgba(0,0,0,0.08);color:#1a1f36;font-weight:700}
+body.light .notif-item{border-color:rgba(0,0,0,0.06)}
+body.light .notif-item:hover{background:#f8f9ff}
+body.light .notif-item-name{color:#1a1f36;font-weight:600}
+body.light .notif-meta-pill{background:#e8f8f5;border-color:rgba(43,188,176,0.3);color:#0d6b60}
+
+/* ── Light Modal ── */
+body.light .modal{background:#fff;border-color:rgba(0,0,0,0.12);box-shadow:0 24px 60px rgba(0,0,0,0.15)}
+body.light .confirm-modal{background:#fff;border-color:rgba(223,27,65,0.2);box-shadow:0 24px 60px rgba(0,0,0,0.15)}
+body.light .modal-title{color:#1a1f36}
+body.light .modal-sub{color:#8792a2}
+body.light .form-label{color:#8792a2}
+
+/* ── Light GP Banner ── */
+body.light .gp-banner{background:linear-gradient(90deg,rgba(43,188,176,.08),rgba(43,188,176,.02));border-color:rgba(43,188,176,.25);color:#0d2a28}
+
+/* ── Light scrollbar ── */
+body.light ::-webkit-scrollbar-thumb{background:#d1d5db}
+body.light ::-webkit-scrollbar-track{background:#f5f6f8}
+
+/* Theme transition */
+body, .header, .kpi-bar, .kpi-card, .kpi-progress,
+.project-card, .side-panel, .exec-table td, .exec-table th,
+.notif-panel, .modal, .confirm-modal, .overlay {
+  transition: background .3s ease, border-color .3s ease, color .2s ease;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  width:32px;height:32px;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text3);transition:all .15s;
+  flex-shrink:0;
+}
+.theme-toggle:hover{color:var(--text);border-color:var(--border2)}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barGrow{from{width:0!important}to{}}
+
+.exec-table tbody tr{animation:fadeUp .25s ease both}
+.exec-table tbody tr:nth-child(1){animation-delay:.03s}
+.exec-table tbody tr:nth-child(2){animation-delay:.06s}
+.exec-table tbody tr:nth-child(3){animation-delay:.09s}
+.exec-table tbody tr:nth-child(4){animation-delay:.12s}
+.exec-table tbody tr:nth-child(5){animation-delay:.15s}
+.exec-table tbody tr:nth-child(6){animation-delay:.18s}
+.exec-table tbody tr:nth-child(7){animation-delay:.21s}
+.exec-table tbody tr:nth-child(8){animation-delay:.24s}
+
+.exec-fill{animation:barGrow .8s cubic-bezier(.4,0,.2,1) both}
+.side-inner{animation:slideIn .25s cubic-bezier(.4,0,.2,1) both}
+.kpi-num{animation:countUp .4s ease both}
+
+/* PDF button */
+.btn-pdf{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text3);
+  padding:6px 12px;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-pdf:hover{color:var(--text);border-color:var(--border2);background:var(--s2)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--s3);border-radius:10px}
+
+/* ── HEADER ── */
+.header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(10,12,16,0.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;
+  height:58px;
+  display:flex;align-items:center;gap:16px;
+}
+.logo-wrap{
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+}
+.logo-img-area{
+  width:32px;height:32px;
+  border-radius:7px;
+  background:var(--s3);
+  border:1px dashed var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;cursor:pointer;position:relative;
+}
+.logo-img-area img{width:100%;height:100%;object-fit:contain;display:none}
+.logo-img-area svg{display:none}
+#logoUploadInput{display:none}
+.logo-text{
+  font-size:15px;font-weight:700;letter-spacing:-.3px;
+  color:var(--text);
+}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:.6px;text-transform:uppercase;margin-top:1px}
+
+.hdivider{width:1px;height:20px;background:var(--border);flex-shrink:0}
+
+.search-wrap{position:relative;flex:1;max-width:300px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.search-input{
+  width:100%;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;
+  padding:7px 12px 7px 34px;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:13px;
+  outline:none;transition:border-color .2s,background .2s;
+}
+.search-input:focus{border-color:var(--blue);background:var(--s1)}
+.search-input::placeholder{color:var(--text3)}
+
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;border:none;transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--blue);color:#0a0c10;font-weight:600}
+.btn-primary:hover{background:#3a7af0;transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,142,247,.3)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2);background:var(--s2)}
+
+/* ── KPI BAR ── */
+.kpi-bar{
+  display:flex;gap:12px;
+  padding:16px 28px;
+  border-bottom:1px solid var(--border);
+  background:var(--s0);
+  overflow-x:auto;
+}
+.kpi-card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 18px;
+  min-width:160px;flex-shrink:0;
+  cursor:default;
+  transition:border-color .2s;
+}
+.kpi-card.selected{border-color:var(--blue);background:rgba(0,229,160,.05)}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:6px}
+.kpi-num{font-size:30px;font-weight:800;line-height:1;letter-spacing:-1px}
+.kpi-num.c-green{color:var(--green)}
+.kpi-num.c-red{color:var(--red)}
+.kpi-num.c-blue{color:var(--blue)}
+.kpi-num.c-amber{color:var(--amber)}
+.kpi-hint{font-size:10px;color:var(--text3);margin-top:4px}
+
+.kpi-progress{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:10px;padding:14px 18px;
+  flex:1;min-width:200px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:8px;justify-content:center;
+}
+.kpi-progress-top{display:flex;justify-content:space-between;align-items:baseline}
+.kpi-progress-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3)}
+.kpi-progress-pct{font-size:20px;font-weight:800;letter-spacing:-1px;color:var(--green)}
+.progress-track{height:5px;background:var(--s3);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#00b5ae,var(--green));transition:width .7s cubic-bezier(.4,0,.2,1)}
+.kpi-progress-hint{font-size:10px;color:var(--text3)}
+
+/* ── MAIN LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 58px - 80px);align-items:flex-start}
+.project-area{flex:1;padding:24px 28px;min-width:0}
+
+/* ── SIDE PANEL ── */
+.side-panel{
+  width:0;overflow:hidden;
+  border-left:1px solid transparent;
+  background:var(--s0);
+  transition:width .3s cubic-bezier(.4,0,.2,1),border-color .3s;
+  flex-shrink:0;
+  position:fixed;
+  right:0;
+  top:0;
+  height:100vh;
+  z-index:400;
+  overflow-y:auto;
+}
+.side-panel.open{
+  width:360px;
+  border-color:var(--border);
+  box-shadow:-4px 0 24px rgba(0,0,0,.4);
+}
+.side-inner{width:360px;padding:24px 22px;overflow-y:auto}
+.panel-close{
+  position:absolute;top:12px;right:12px;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;padding:4px;border-radius:4px;
+  transition:color .15s;
+}
+.panel-close:hover{color:var(--text)}
+.panel-header{position:relative;margin-bottom:20px;padding-right:24px}
+.panel-project-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.panel-gp{font-size:12px;color:var(--text3)}
+
+.panel-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.panel-kpi{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;
+}
+.panel-kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:4px}
+.panel-kpi-val{font-size:22px;font-weight:800;letter-spacing:-1px}
+
+.panel-section-title{
+  font-size:10px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--text3);margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.panel-doc-row{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .1s;border-radius:4px;
+  padding-left:4px;
+}
+.panel-doc-row:hover{background:var(--s2)}
+.panel-doc-row:last-child{border-bottom:none}
+.pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.panel-doc-name{flex:1;font-size:12px;color:var(--text2)}
+.panel-doc-badge{
+  font-size:10px;font-family:'Inter',monospace;
+  padding:2px 7px;border-radius:4px;border:1px solid;
+}
+.panel-doc-badge.ok{background:var(--green-dim);border-color:var(--green-border);color:var(--green-text)}
+.panel-doc-badge.nok{background:var(--red-dim);border-color:var(--red-border);color:var(--red-text)}
+
+/* ── SECTION HEADER ── */
+.section-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:.2px}
+.section-badge{
+  font-size:10px;background:var(--s2);border:1px solid var(--border);
+  color:var(--text3);padding:2px 8px;border-radius:20px;margin-left:6px;
+}
+
+/* ── PROJECT CARD ── */
+.project-card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:14px;
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.project-card:hover{border-color:var(--border2)}
+.project-card.focused{
+  border-color:rgba(79,142,247,.4);
+  box-shadow:0 0 0 1px rgba(79,142,247,.15);
+}
+
+.proj-header{
+  padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;
+  user-select:none;
+}
+.proj-avatar{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,#0d2a28,#2bbcb022);
+  border:1px solid rgba(43,188,176,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#5dd8d0;
+  flex-shrink:0;letter-spacing:-.5px;
+}
+.proj-info{flex:1;min-width:0}
+.proj-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj-gp{font-size:11px;color:var(--text3);margin-top:1px}
+.proj-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+.health-pill{
+  display:flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;
+  font-size:10px;font-weight:600;letter-spacing:.3px;
+  border:1px solid;
+}
+.health-ok{background:var(--green-dim);border-color:var(--green-border);color:var(--green-text)}
+.health-warn{background:var(--amber-dim);border-color:rgba(245,158,11,.2);color:#fbbf24}
+.health-crit{background:var(--red-dim);border-color:var(--red-border);color:var(--red-text)}
+
+.proj-actions{display:flex;gap:2px}
+.icon-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);padding:5px;border-radius:6px;
+  transition:color .15s,background .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.icon-btn:hover{color:var(--text);background:var(--s3)}
+.icon-btn.info:hover{color:var(--blue);background:var(--blue-glow)}
+.icon-btn.arch:hover{color:var(--amber);background:var(--amber-dim)}
+
+.chevron-icon{transition:transform .25s;color:var(--text3)}
+.proj-card-collapsed .chevron-icon{transform:rotate(-90deg)}
+
+/* ── DOCS BODY ── */
+.docs-body{
+  overflow:hidden;
+  transition:max-height .35s cubic-bezier(.4,0,.2,1);
+}
+.docs-inner{padding:0 18px 14px}
+.phase-group{margin-bottom:10px}
+.phase-tag{
+  font-size:9px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--text3);margin-bottom:6px;margin-top:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.phase-tag::after{content:'';flex:1;height:1px;background:var(--border)}
+.phase-tag:first-child{margin-top:0}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:5px}
+
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 9px;border-radius:5px;
+  font-size:11px;font-weight:500;
+  cursor:pointer;border:1px solid;
+  transition:filter .15s,transform .1s,opacity .15s;
+  user-select:none;
+}
+.chip:hover{filter:brightness(1.2);transform:translateY(-1px)}
+.chip:active{transform:translateY(0)}
+.chip-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* Obrigatório OK */
+.chip-ok{
+  background:var(--green-dim);
+  border-color:var(--green-border);
+  color:var(--green-text);
+}
+/* Obrigatório N OK */
+.chip-nok{
+  background:var(--red-dim);
+  border-color:var(--red-border);
+  color:var(--red-text);
+}
+/* Secundário — bem discreto */
+.chip-sec{
+  background:var(--gray-dim);
+  border-color:var(--gray-border);
+  color:var(--gray-text);
+}
+.chip-sec:hover{color:var(--text3)}
+/* Secundário OK — levemente visível */
+.chip-sec-ok{
+  background:rgba(34,197,94,.04);
+  border-color:rgba(34,197,94,.1);
+  color:#2d5c3a;
+}
+.chip-sec-ok:hover{color:#3d7a4e}
+
+/* ── PROJ FOOTER ── */
+.proj-footer{
+  padding:8px 18px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  font-size:10px;color:var(--text3);
+  background:var(--s0);
+}
+.stat-item{display:flex;align-items:center;gap:4px}
+.stat-dot{width:5px;height:5px;border-radius:50%}
+
+/* ── ARCHIVED SECTION ── */
+.arch-toggle{
+  display:flex;align-items:center;gap:7px;
+  padding:10px 0;cursor:pointer;
+  color:var(--text3);font-size:12px;
+  border-top:1px solid var(--border);margin-top:8px;
+  transition:color .15s;
+}
+.arch-toggle:hover{color:var(--text2)}
+.arch-badge{
+  background:var(--s2);border:1px solid var(--border);
+  color:var(--text3);font-size:10px;padding:1px 6px;border-radius:10px;
+}
+.icon-btn.danger:hover{color:var(--red);background:var(--red-dim)}
+
+/* ── Confirm Modal ── */
+.confirm-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:2000;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.confirm-overlay.open{opacity:1;pointer-events:all}
+.confirm-modal{
+  background:var(--s1);
+  border:1px solid var(--red-border);
+  border-radius:14px;
+  width:380px;padding:24px;
+  transform:translateY(16px) scale(.97);
+  transition:transform .22s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(239,68,68,.1);
+}
+.confirm-overlay.open .confirm-modal{transform:translateY(0) scale(1)}
+.confirm-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--red-dim);border:1px solid var(--red-border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--red-text);margin-bottom:14px;
+}
+.confirm-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.confirm-desc{font-size:13px;color:var(--text3);line-height:1.5;margin-bottom:6px}
+.confirm-project-name{
+  font-size:13px;font-weight:600;color:var(--red-text);
+  background:var(--red-dim);border:1px solid var(--red-border);
+  border-radius:6px;padding:8px 12px;margin-bottom:20px;
+}
+.confirm-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-danger{background:var(--red);color:#fff;border:none}
+.btn-danger:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 4px 16px rgba(239,68,68,.3)}
+
+/* ── MODAL ── */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--s1);
+  border:1px solid var(--border2);
+  border-radius:16px;
+  width:420px;padding:28px;
+  transform:translateY(20px) scale(.97);
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+}
+.overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:22px}
+.form-field{margin-bottom:14px}
+.form-label{font-size:11px;color:var(--text3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.form-input{
+  width:100%;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;
+  padding:9px 12px;color:var(--text);
+  font-family:'Inter',sans-serif;font-size:13px;
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus{border-color:var(--blue)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}
+
+/* ── TOOLTIP LEGEND (escondida, aparece ao hover) ── */
+.legend-wrap{
+  display:flex;align-items:center;gap:4px;
+  position:relative;
+}
+.legend-icon{
+  width:26px;height:26px;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  cursor:help;color:var(--text3);transition:color .15s,border-color .15s;
+}
+.legend-icon:hover{color:var(--text);border-color:var(--border2)}
+.legend-dropdown{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--s2);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 14px;
+  width:210px;
+  opacity:0;pointer-events:none;
+  transform:translateY(-4px);
+  transition:opacity .2s,transform .2s;
+  z-index:300;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.legend-wrap:hover .legend-dropdown{opacity:1;pointer-events:all;transform:translateY(0)}
+.legend-title{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px}
+.legend-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11px}
+.legend-row:last-child{margin-bottom:0}
+.legend-swatch{width:10px;height:10px;border-radius:2px;border:1px solid;flex-shrink:0}
+.legend-desc{color:var(--text2)}
+.legend-hint{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ── Situação badges ── */
+.sit-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;
+  font-size:10px;font-weight:600;letter-spacing:.3px;
+  border:1px solid;flex-shrink:0;
+}
+.sit-andamento { background:rgba(43,188,176,.1); border-color:rgba(43,188,176,.3); color:#2bbcb0; }
+.sit-standby   { background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.2); color:#f59e0b; }
+.sit-inviavel  { background:rgba(239,68,68,.08);  border-color:rgba(239,68,68,.2);  color:#f87171; }
+.sit-finalizado{ background:rgba(99,102,241,.08); border-color:rgba(99,102,241,.2); color:#818cf8; }
+.sit-aguardando{ background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#6b7280; }
+.sit-cancelado { background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);color:#4a5268;}
+
+/* custom select */
+.form-select{
+  width:100%;background:var(--s2);
+  border:1px solid var(--border);border-radius:8px;
+  padding:9px 12px;color:var(--text);
+  font-family:'Inter',sans-serif;font-size:13px;
+  outline:none;transition:border-color .2s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  cursor:pointer;
+}
+.form-select:focus{border-color:var(--blue)}
+.form-select option{background:#1c2030;color:var(--text)}
+
+/* edit icon btn */
+.icon-btn.edit:hover{color:var(--blue);background:var(--blue-glow)}
+
+/* ── View Toggle ── */
+.view-toggle{display:flex;gap:4px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:3px}
+.vtog{
+  padding:5px 14px;border-radius:6px;border:none;background:transparent;
+  color:var(--text3);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;
+}
+.vtog.active{background:var(--s3);color:var(--text);border:1px solid var(--border2)}
+.vtog:not(.active):hover{color:var(--text2)}
+
+/* ── Executive Table ── */
+.exec-wrap{width:100%}
+.exec-section-label{
+  font-size:10px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--text3);margin:0 0 8px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.exec-table{width:100%;border-collapse:collapse}
+.exec-table th{
+  font-size:10px;text-transform:uppercase;letter-spacing:.7px;
+  color:var(--text3);font-weight:500;
+  padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border);
+}
+.exec-table th:nth-child(4),.exec-table td:nth-child(4){min-width:130px}
+.exec-table th:last-child,.exec-table td:last-child{text-align:right}
+.exec-table td{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  font-size:13px;color:var(--text);vertical-align:middle;
+}
+.exec-table tr:last-child td{border-bottom:none}
+.exec-table tbody tr{transition:background .1s;cursor:pointer}
+.exec-table tbody tr:hover td{background:var(--s2)}
+.exec-name-cell{display:flex;align-items:center;gap:9px}
+.exec-gp{font-size:11px;color:var(--text3);margin-top:1px}
+.exec-bar-wrap{display:flex;align-items:center;gap:7px}
+.exec-track{height:5px;background:var(--s3);border-radius:10px;overflow:hidden;width:90px}
+.exec-fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.fill-green{background:var(--green)}
+.fill-amber{background:var(--amber)}
+.fill-red{background:var(--red)}
+.exec-pct{font-size:12px;font-weight:600;min-width:36px}
+.pct-green{color:var(--green)}
+.pct-amber{color:var(--amber)}
+.pct-red{color:var(--red)}
+.exec-pend-val{font-size:13px;font-weight:600;color:var(--red-text)}
+.exec-pend-val.ok{color:var(--green-text)}
+.exec-dim{font-size:11px;color:var(--text3)}
+
+.empty{
+  text-align:center;padding:56px 20px;color:var(--text3);
+}
+.empty-icon{margin:0 auto 12px;opacity:.2}
+.empty-title{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:4px}
+
+/* ── LIXEIRA ── */
+.trash-section{margin-top:20px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.project-card{animation:fadeUp .3s ease both}
+
+/* ── Notification Bell ── */
+.notif-wrap{position:relative}
+.notif-btn{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--s2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text3);transition:all .15s;
+}
+.notif-btn:hover{color:var(--text);border-color:var(--border2)}
+.notif-btn.has-pending{color:var(--red);border-color:var(--red-border);background:var(--red-dim)}
+.notif-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--bg);
+}
+.notif-panel{
+  position:absolute;top:calc(100% + 8px);right:0;
+  width:320px;
+  background:var(--s1);border:1px solid var(--border2);
+  border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  z-index:500;
+  display:none;
+}
+.notif-panel.open{display:block}
+.notif-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--text);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.notif-item{
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  transition:background .15s;
+}
+.notif-item:hover{background:var(--s2)}
+.notif-item:last-child{border-bottom:none}
+.notif-item-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.notif-item-meta{font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+.notif-meta-pill{background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:2px 7px;font-size:10px;color:var(--text3)}
+.notif-actions{display:flex;gap:6px}
+.btn-approve{
+  flex:1;
+  background:linear-gradient(135deg,#052e1c,#064e30);
+  border:1px solid var(--green-border);
+  color:var(--green-text);
+  padding:7px 12px;border-radius:8px;
+  font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-family:'Inter',sans-serif;
+}
+.btn-approve:hover{background:rgba(34,197,94,.15);transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,197,94,.2)}
+.btn-reject{
+  flex:1;
+  background:linear-gradient(135deg,#2a0a0a,#3a1010);
+  border:1px solid var(--red-border);
+  color:var(--red-text);
+  padding:7px 12px;border-radius:8px;
+  font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-family:'Inter',sans-serif;
+}
+.btn-reject:hover{background:rgba(239,68,68,.15);transform:translateY(-1px);box-shadow:0 4px 12px rgba(239,68,68,.2)}
+.notif-empty{padding:24px;text-align:center;font-size:12px;color:var(--text3)}
+
+/* ── GP Mode Banner ── */
+.gp-banner{
+  background:linear-gradient(90deg,rgba(43,188,176,.1),rgba(43,188,176,.05));
+  border-bottom:1px solid rgba(43,188,176,.2);
+  padding:8px 28px;
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;color:#2bbcb0;
+}
+.gp-banner strong{font-weight:600}
+
+/* ── Pending project card ── */
+.pending-overlay{
+  position:absolute;inset:0;
+  background:rgba(8,10,14,.6);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(2px);
+  pointer-events:none;
+}
+.pending-badge-big{
+  background:rgba(245,158,11,.15);
+  border:1px solid rgba(245,158,11,.3);
+  color:#f59e0b;
+  padding:6px 16px;border-radius:20px;
+  font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .side-panel.open{position:fixed;right:0;top:0;height:100vh;z-index:500;width:300px!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="logo-wrap">
+    <div class="logo-img-area" id="logoArea" style="cursor:default;background:transparent;border:none;">
+      <img id="logoImg" alt="Grupo DB" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAEUElEQVR4nO3d0W7bSBBFwfFi//+XlYdFsIITXVO2RHb3VD0FQawMmT4aUWDAj9vttoC/++fqBUBlAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBD8e/UCLnJ78Psfp66C8nYK5FEUj/6MWNgikCNhpJ8TysamX4N8N45XvwZNTQ3ktl472CLZ1MRA3jXMItnQtEDePcQi2cykQM4aXpFsZEogZw+tSDYxJZAriGQDEwK5clBFMlz3QCoMaIU18CbdA4G36hxIpXfuSmvhhboGUnEgK66JH+oaSFUiGaZjIIaQ03QMpDoBDyKQ9xDJEN0CMXicqlsgnYh5gE6BdBy4jmvmTqdAuhJJYwI5h0iaEggEAjmPXaShLoFMGa4px7GNLoFMIpJGBHINkTQhEAgEch27SAMCuZZIihPI9URSmEBqEElRAqlDJAUJpBaRFLPDE6a6ua2eT7Ua+dxHgdTUIZKju13rR9kJpK6KkfzkI2DLUFyD1FblmuSVj7SrckyHCKS+qwbqtl4bxufXbkEgPXhA0EUE0scZQ/uuHePR31WeQHp55xN8Wwzs2boE0uqbjzfzDPgTdQmEP/10sO0aBwikt+8OuDAOEkh/z+4E4nhCp0Bch2RfDb6PVN/QKRC+9iiAimG0eMNzL9Y89/c8VQyjlW47SIt3nSIqx9Hm37FbIBz3sWoOYsU1PdQxkFYn+CIfn35d5ZxVWcdhHQMhezSEV4fSLo61BDLNkSG8IpSWcazVN5C2J/yNnj0nZ4Ry9a71Y52/5vU15v9+MoT3P/uq89k6inudA+E/rxzGz691NJgxQXzWPZDdd5EzPiJtres1CIb3FBMC2XFQdjzmS0wIZK29BmanY73clEB2IY6TTQpk+vBMP76SJgWy1twhmnpc5U0LZK15wzTteFqZGMhaM4aq/W0aE0wNZC3DxQtMDmStnpHYOQqZHshavYat01q3sEMga/UYvA5r3M4ugaxVewArr21r3e/mfdbvQaxyB7AwittpB7lXYTArrIEv7LaD3LtqNxFGI7vuIPfOGlhf3za08w5y7x3/L/vR69OIQP70qlhEMYBAsmdiEcRAAjlOABtykQ6BQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAS/ACIoap+5AdaTAAAAAElFTkSuQmCC" style="display:block;width:100%;height:100%;object-fit:contain;" />
+    </div>
+    
+    <div>
+      <div class="logo-text" id="companyName">Grupo DB</div>
+      <div class="logo-sub">PMO</div>
+    </div>
+  </div>
+
+  <div class="hdivider"></div>
+
+  <div class="search-wrap">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input class="search-input" id="searchInput" type="text" placeholder="Buscar projeto ou responsável…">
+  </div>
+
+  <div class="header-right">
+    <!-- Legend tooltip -->
+    <div class="legend-wrap">
+      <div class="legend-icon" title="Legenda">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </div>
+      <div class="legend-dropdown">
+        <div class="legend-title">Legenda de Status</div>
+        <div class="legend-row">
+          <div class="legend-swatch" style="background:var(--green-dim);border-color:var(--green-border)"></div>
+          <div>
+            <div class="legend-desc">Conforme · Obrigatório</div>
+            <div class="legend-hint">Documento entregue e validado</div>
+          </div>
+        </div>
+        <div class="legend-row">
+          <div class="legend-swatch" style="background:var(--red-dim);border-color:var(--red-border)"></div>
+          <div>
+            <div class="legend-desc">Pendente · Obrigatório</div>
+            <div class="legend-hint">Ação requerida pelo GP</div>
+          </div>
+        </div>
+        <div class="legend-row">
+          <div class="legend-swatch" style="background:var(--gray-dim);border-color:var(--gray-border)"></div>
+          <div>
+            <div class="legend-desc">Complementar</div>
+            <div class="legend-hint">Não impacta índice de saúde</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hdivider"></div>
+    <!-- View toggle hidden - exec is default -->
+    <div class="view-toggle" style="display:none">
+      <button class="vtog" id="togDetail" onclick="setView('detail')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Detalhado
+      </button>
+      <button class="vtog active" id="togExec" onclick="setView('exec')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Executivo
+      </button>
+    </div>
+    <div class="hdivider"></div>
+    <!-- Notification bell (admin only) -->
+    <div class="notif-wrap" id="notifWrap" style="display:none">
+      <div class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header">
+          <span>Projetos aguardando aprovação</span>
+          <span id="notifCount" style="color:var(--red)"></span>
+        </div>
+        <div id="notifList"><div class="notif-empty">Nenhum projeto pendente</div></div>
+      </div>
+    </div>
+    <!-- Theme toggle -->
+    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Alternar tema">
+      <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </div>
+    <!-- PDF export (admin only) -->
+    <button class="btn-pdf" id="pdfBtn" style="display:none" onclick="exportPDF()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Exportar PDF
+    </button>
+    <button class="btn btn-primary" onclick="openModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Novo Projeto
+    </button>
+  </div>
+</header>
+
+<!-- ── GP MODE BANNER ── -->
+<div class="gp-banner" id="gpBanner" style="display:none">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  <span>Você está no <strong>Modo GP</strong> — crie projetos e acompanhe seus documentos. Novos projetos aguardam aprovação do administrador.</span>
+</div>
+<div class="kpi-bar">
+  <div class="kpi-card" id="kpiAderenciaCard">
+    <div class="kpi-label">Índice de Aderência</div>
+    <div class="kpi-num c-green" id="kpiAderencia">—</div>
+    <div class="kpi-hint" id="kpiAderenciaHint">documentos obrigatórios OK</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Pendências Críticas</div>
+    <div class="kpi-num c-red" id="kpiPendencias">—</div>
+    <div class="kpi-hint" id="kpiPendenciasHint">obrigatórios sem entrega</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Projetos Ativos</div>
+    <div class="kpi-num c-blue" id="kpiProjetos">—</div>
+    <div class="kpi-hint">em monitoramento</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Itens Complementares OK</div>
+    <div class="kpi-num c-amber" id="kpiSec">—</div>
+    <div class="kpi-hint" id="kpiSecHint">dos complementares</div>
+  </div>
+  <div class="kpi-progress">
+    <div class="kpi-progress-top">
+      <span class="kpi-progress-title" id="kpiBarLabel">Conformidade Global</span>
+      <span class="kpi-progress-pct" id="kpiBarPct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="kpiBarFill" style="width:0%"></div></div>
+    <div class="kpi-progress-hint" id="kpiBarHint">—</div>
+  </div>
+</div>
+
+<!-- ── LAYOUT ── -->
+<div class="layout">
+  <div class="project-area">
+    <div class="section-row">
+      <div>
+        <span class="section-title">Projetos Ativos</span>
+        <span class="section-badge" id="activeCount">0</span>
+      </div>
+    </div>
+    <div id="projectList" style="display:none"></div>
+    <div id="execView"></div>
+
+    <!-- Arquivados -->
+    <div id="archSection" style="display:none">
+      <div class="arch-toggle" onclick="toggleArch()">
+        <svg id="archChevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="transition:transform .2s"><path d="m9 18 6-6-6-6"/></svg>
+        <span>Arquivados</span>
+        <span class="arch-badge" id="archCount">0</span>
+      </div>
+      <div id="archivedList" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── SIDE PANEL ── -->
+  <div class="side-panel" id="sidePanel">
+    <div class="side-inner">
+      <div class="panel-header">
+        <button class="panel-close" onclick="closePanel()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="panel-project-name" id="panelName">—</div>
+        <div class="panel-gp" id="panelGP">GP: —</div>
+      </div>
+
+      <div class="panel-kpi-grid">
+        <div class="panel-kpi">
+          <div class="panel-kpi-label">Aderência</div>
+          <div class="panel-kpi-val c-green" id="panelAd">0%</div>
+        </div>
+        <div class="panel-kpi">
+          <div class="panel-kpi-label">Pendências</div>
+          <div class="panel-kpi-val c-red" id="panelPend">0</div>
+        </div>
+        <div class="panel-kpi">
+          <div class="panel-kpi-label">Obrig. OK</div>
+          <div class="panel-kpi-val c-blue" id="panelObOk">0</div>
+        </div>
+        <div class="panel-kpi">
+          <div class="panel-kpi-label">Compl. OK</div>
+          <div class="panel-kpi-val c-amber" id="panelSecOk">0</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <div class="progress-track"><div class="progress-fill" id="panelBar" style="width:0%"></div></div>
+      </div>
+
+      <div class="panel-section-title" style="margin-top:16px">Documentos Obrigatórios</div>
+      <div id="panelObrigDocs"></div>
+
+      <div class="panel-section-title" style="margin-top:16px">Complementares</div>
+      <div id="panelSecDocs"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL CRIAR ── -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Novo Projeto</div>
+    <div class="modal-sub" id="modalSub">O projeto será criado com os 25 documentos padrão do PMO.</div>
+    <div class="form-field">
+      <label class="form-label">Nome do Projeto *</label>
+      <input class="form-input" id="newName" type="text" placeholder="Ex: Migração Cloud" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">Gerente de Projeto</label>
+      <input class="form-input" id="newGP" type="text" placeholder="Nome do responsável" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">Situação do Projeto</label>
+      <select class="form-select" id="newSituacao">
+        <option value="aguardando">⏳ Aguardando início</option>
+        <option value="andamento" selected>🔄 Em andamento</option>
+        <option value="standby">⏸ Stand by</option>
+        <option value="inviavel">🚫 Inviabilizado</option>
+        <option value="finalizado">✅ Finalizado</option>
+        <option value="cancelado">❌ Cancelado</option>
+      </select>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Apenas projetos <strong style="color:var(--blue)">"Em andamento"</strong> impactam os indicadores globais.</div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Fase Atual do Projeto</label>
+      <select class="form-select" id="newFase">
+        <option value="priorizacao">📌 Priorização</option>
+        <option value="ideacao" selected>💡 Ideação da proposta de valor</option>
+        <option value="planejamento">📋 Planejamento</option>
+        <option value="execucao">⚙️ Execução</option>
+        <option value="encerramento">🏁 Encerramento</option>
+      </select>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">O índice de saúde considera apenas os documentos <strong style="color:var(--blue)">da fase atual para trás</strong>.</div>
+    </div>
+    <div class="form-field" id="artiaIdField">
+      <label class="form-label">ID do Projeto no Artia <span style="font-size:10px;color:var(--text3)">(para sincronização automática de fase)</span></label>
+      <input class="form-input" id="newArtiaId" type="text" placeholder="Ex: 6142325" style="font-family:monospace" />
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Encontre o ID na URL do projeto no Artia: app2.artia.com/a/XXXXX/p/<strong>ID</strong></div>
+    </div>
+    <div class="form-field" id="secDocsField" style="display:none">
+      <label class="form-label">Documentos Complementares que serão utilizados</label>
+      <div id="secDocsList" style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">Selecione apenas os complementares que o projeto vai utilizar.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSaveBtn" onclick="saveModal()">Criar Projeto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOADING OVERLAY ── -->
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(8,10,14,.85);z-index:3000;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(8px)">
+  <div style="width:36px;height:36px;border:3px solid rgba(43,188,176,.2);border-top-color:#2bbcb0;border-radius:50%;animation:spin .8s linear infinite"></div>
+  <div style="font-size:13px;color:var(--text3)">Conectando ao Firebase…</div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<!-- ── WELCOME SCREEN (readonly only) ── -->
+<div id="welcomeScreen" style="display:none;position:fixed;inset:0;z-index:4000;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#080a0e">
+
+  <!-- Animated background -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
+    <!-- Glow orbs -->
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(43,188,176,.12) 0%,transparent 70%);top:-100px;left:-100px;animation:orb1 8s ease-in-out infinite"></div>
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,.08) 0%,transparent 70%);bottom:-80px;right:-80px;animation:orb2 10s ease-in-out infinite"></div>
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(43,188,176,.06) 0%,transparent 70%);top:50%;right:20%;animation:orb3 12s ease-in-out infinite"></div>
+    <!-- Grid lines -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(43,188,176,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(43,188,176,.03) 1px,transparent 1px);background-size:60px 60px"></div>
+    <!-- Top border glow -->
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(43,188,176,.5),transparent)"></div>
+  </div>
+
+  <!-- Content -->
+  <div style="text-align:center;position:relative;z-index:1;padding:40px;animation:welcomeIn .7s cubic-bezier(.4,0,.2,1) both">
+
+    <!-- Logo -->
+    <div style="position:relative;display:inline-block;margin-bottom:28px">
+      <div style="width:88px;height:88px;border-radius:22px;background:linear-gradient(135deg,#0d2a28,#1a3a38);border:1px solid rgba(43,188,176,.3);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 0 40px rgba(43,188,176,.15),0 20px 40px rgba(0,0,0,.4);overflow:hidden">
+        <img id="welcomeLogo" style="width:80%;height:80%;object-fit:contain" />
+      </div>
+      <!-- Online indicator -->
+      <div style="position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:2px solid #080a0e;box-shadow:0 0 8px rgba(34,197,94,.6)"></div>
+    </div>
+
+    <!-- Company name -->
+    <div style="font-family:'Inter',sans-serif;font-size:30px;font-weight:800;color:#dde2ee;letter-spacing:-.5px;margin-bottom:8px">DB Diagnósticos</div>
+
+    <!-- Tagline with highlight -->
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(43,188,176,.08);border:1px solid rgba(43,188,176,.2);border-radius:20px;padding:6px 16px;margin-bottom:40px">
+      <div style="width:6px;height:6px;border-radius:50%;background:#2bbcb0;box-shadow:0 0 6px rgba(43,188,176,.8)"></div>
+      <span style="font-family:'Inter',sans-serif;font-size:13px;color:#2bbcb0;font-weight:500;letter-spacing:.3px">Acompanhamento de Documentação de Projetos</span>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:flex;gap:1px;margin-bottom:40px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.06)" id="welcomeStats">
+      <div style="flex:1;background:rgba(255,255,255,.03);padding:14px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#2bbcb0;font-family:'Outfit',sans-serif" id="wStatAd">—</div>
+        <div style="font-size:10px;color:#4a5268;text-transform:uppercase;letter-spacing:.8px;margin-top:2px">Aderência</div>
+      </div>
+      <div style="flex:1;background:rgba(255,255,255,.03);padding:14px 20px;text-align:center;border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)">
+        <div style="font-size:22px;font-weight:800;color:#ef4444;font-family:'Outfit',sans-serif" id="wStatPend">—</div>
+        <div style="font-size:10px;color:#4a5268;text-transform:uppercase;letter-spacing:.8px;margin-top:2px">Pendências</div>
+      </div>
+      <div style="flex:1;background:rgba(255,255,255,.03);padding:14px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#4f8ef7;font-family:'Outfit',sans-serif" id="wStatProj">—</div>
+        <div style="font-size:10px;color:#4a5268;text-transform:uppercase;letter-spacing:.8px;margin-top:2px">Projetos</div>
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <button onclick="enterDashboard()" id="welcomeBtn" style="
+      background:linear-gradient(135deg,#2bbcb0,#1a9e93);
+      color:#fff;border:none;
+      padding:16px 48px;border-radius:12px;
+      font-family:'Inter',sans-serif;font-size:16px;font-weight:700;
+      cursor:pointer;transition:all .2s;
+      box-shadow:0 8px 32px rgba(43,188,176,.35),0 2px 8px rgba(0,0,0,.3);
+      letter-spacing:.2px;
+      display:inline-flex;align-items:center;gap:10px;
+    " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 16px 40px rgba(43,188,176,.45),0 4px 12px rgba(0,0,0,.3)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(43,188,176,.35),0 2px 8px rgba(0,0,0,.3)'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      Abrir em Tela Cheia
+    </button>
+
+    <div style="font-size:11px;color:#2a3040;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:6px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Somente visualização · Dados em tempo real
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes orb1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.05)}}
+@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,-30px) scale(1.08)}}
+@keyframes orb3{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-15px)}}
+@keyframes welcomeIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+</style>
+
+<!-- ── GP NAME MODAL ── -->
+<div class="overlay" id="gpNameOverlay">
+  <div class="modal" style="width:380px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0d2a28,#2bbcb022);border:1px solid rgba(43,188,176,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#2bbcb0" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="modal-title" style="font-size:18px;margin-bottom:6px">Bem-vindo ao modo GP!</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:24px">Digite seu nome para identificar seus projetos no dashboard.</div>
+    <div class="form-field">
+      <input class="form-input" id="gpNameInput" type="text" placeholder="Ex: Adriano" style="text-align:center;font-size:15px;padding:12px" />
+    </div>
+    <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;margin-top:8px" onclick="confirmGpName()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+      Entrar no Dashboard
+    </button>
+  </div>
+</div>
+
+<!-- ── GP SUCCESS MODAL ── -->
+<div class="overlay" id="gpSuccessOverlay" style="pointer-events:none;opacity:0">
+  <div class="modal" style="width:360px;text-align:center;transform:translateY(20px) scale(.97);transition:transform .25s cubic-bezier(.4,0,.2,1)" id="gpSuccessModal">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green-border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px">Projeto enviado!</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:24px">Seu projeto foi enviado para aprovação do administrador. Você será notificado quando for aprovado.</div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeGpSuccess()">Entendido</button>
+  </div>
+</div>
+
+<!-- ── CONFIRM DELETE MODAL ── -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-modal">
+    <div class="confirm-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </div>
+    <div class="confirm-title">Excluir permanentemente?</div>
+    <div class="confirm-desc">Esta ação não pode ser desfeita. Todos os documentos e histórico do projeto serão removidos.</div>
+    <div class="confirm-project-name" id="confirmProjectName">—</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" onclick="executeDelete()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        Excluir para sempre
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ─── Firebase Setup ───────────────────────────────────────────────────────────
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyABwH8VS6OXdTEhtifxrokrdKEPFxLtQXA",
+  authDomain: "db-pmo.firebaseapp.com",
+  projectId: "db-pmo",
+  storageBucket: "db-pmo.firebasestorage.app",
+  messagingSenderId: "1044938646039",
+  appId: "1:1044938646039:web:d326db7fa03f14b634b252"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Loading overlay
+function showLoading(){ document.getElementById("loadingOverlay").style.display="flex"; }
+function hideLoading(){ document.getElementById("loadingOverlay").style.display="none"; }
+
+// ─── Situação config ─────────────────────────────────────────────────────────
+const SITUACOES = {
+  andamento:  { label:"Em andamento",    cls:"sit-andamento",  icon:"🔄", kpi:true  },
+  aguardando: { label:"Aguardando início",cls:"sit-aguardando",icon:"⏳", kpi:false },
+  standby:    { label:"Stand by",         cls:"sit-standby",   icon:"⏸", kpi:false },
+  inviavel:   { label:"Inviabilizado",    cls:"sit-inviavel",  icon:"🚫", kpi:false },
+  finalizado: { label:"Finalizado",       cls:"sit-finalizado",icon:"✅", kpi:false },
+  cancelado:  { label:"Cancelado",        cls:"sit-cancelado", icon:"❌", kpi:false },
+};
+function getSit(p){ return SITUACOES[p.situacao||"andamento"] || SITUACOES.andamento; }
+
+// ─── Default Documents ────────────────────────────────────────────────────────
+const DEFAULT_DOCS = [
+  {fase:"Priorização",       nome:"Starting Point",                         tipo:"sec"},
+  {fase:"Ideação",           nome:"Business Case",                           tipo:"sec"},
+  {fase:"Ideação",           nome:"Governança",                              tipo:"obrig"},
+  {fase:"Ideação",           nome:"Governança + RACI",                       tipo:"sec"},
+  {fase:"Ideação",           nome:"Escopo",                                  tipo:"sec"},
+  {fase:"Planejamento",      nome:"Kick Off",                                tipo:"obrig"},
+  {fase:"Planejamento",      nome:"Status Report",                           tipo:"obrig"},
+  {fase:"Planejamento",      nome:"Requisitos",                              tipo:"sec"},
+  {fase:"Planejamento",      nome:"EAP (Artia)",                             tipo:"sec"},
+  {fase:"Planejamento",      nome:"Plano de Comunicação",                    tipo:"obrig"},
+  {fase:"Planejamento",      nome:"Matriz RACI",                             tipo:"sec"},
+  {fase:"Planejamento",      nome:"Gestão de Riscos (Artia)",                tipo:"obrig"},
+  {fase:"Planejamento",      nome:"Plano de Aquisições",                     tipo:"sec"},
+  {fase:"Planejamento",      nome:"Cronograma (Artia)",                      tipo:"obrig"},
+  {fase:"Execução",          nome:"Decisão GO / NO-GO",                      tipo:"obrig"},
+  {fase:"Execução",          nome:"Report GO / NO-GO",                       tipo:"obrig"},
+  {fase:"Execução",          nome:"Plano de Implantação",                    tipo:"sec"},
+  {fase:"Encerramento",      nome:"Checkpoint Pós GO Live",                  tipo:"sec"},
+  {fase:"Encerramento",      nome:"Relatório Pós GO Live",                   tipo:"sec"},
+  {fase:"Encerramento",      nome:"Lições Aprendidas",                       tipo:"sec"},
+  {fase:"Encerramento",      nome:"Termo de Aceite",                         tipo:"obrig"},
+  {fase:"Encerramento",      nome:"Report de Fechamento",                    tipo:"sec"},
+  {fase:"Encerramento",      nome:"Certificado de Participação",             tipo:"obrig"},
+  {fase:"Encerramento",      nome:"E-mail de Encerramento",                  tipo:"obrig"},
+  {fase:"Encerramento",      nome:"Solicitação Fechamento Plano de Contas",  tipo:"obrig"},
+];
+
+const INITIAL_OK = ["Governança","Kick Off","Status Report","Cronograma (Artia)"];
+
+function freshDocs(isInitial=false){
+  return DEFAULT_DOCS.map(d=>({
+    ...d,
+    status: (isInitial && INITIAL_OK.includes(d.nome)) ? "ok" : "nok"
+  }));
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let projects=[], focusedId=null, showArch=false, viewMode='exec';
+
+// Detecta modo somente leitura pelo parâmetro ?view=exec ou ?readonly=1
+const urlParams = new URLSearchParams(window.location.search);
+const IS_READONLY = urlParams.get('view')==='exec' || urlParams.get('readonly')==='1';
+const IS_GP = urlParams.get('role')==='gp';
+const IS_ADMIN = !IS_READONLY && !IS_GP;
+
+// GP name — stored in sessionStorage so it persists during the session
+let GP_NAME = sessionStorage.getItem('gp_name') || '';
+
+function isGpOwner(p){
+  if(!IS_GP) return true; // admin can edit all
+  return (p.gp||'').toLowerCase().trim() === GP_NAME.toLowerCase().trim();
+}
+
+// ─── View Toggle ──────────────────────────────────────────────────────────────
+function setView(mode){
+  viewMode=mode;
+  document.getElementById('togDetail').classList.toggle('active', mode==='detail');
+  document.getElementById('togExec').classList.toggle('active', mode==='exec');
+  document.getElementById('projectList').style.display = mode==='detail'?'block':'none';
+  document.getElementById('execView').style.display    = mode==='exec'?'block':'none';
+  document.getElementById('archSection').style.display = mode==='detail'?'':'none';
+  if(mode==='exec') renderExec(document.getElementById('searchInput').value);
+  if(mode==='detail') render(document.getElementById('searchInput').value);
+}
+
+// ─── GP Color Palette ─────────────────────────────────────────────────────────
+const GP_COLORS = [
+  {from:'#0d4a42', to:'#0a7a6a', border:'rgba(43,188,176,.5)',  text:'#5dd8d0'}, // teal
+  {from:'#1a2a6a', to:'#1e4aaa', border:'rgba(79,142,247,.5)',  text:'#93c5fd'}, // blue
+  {from:'#4a1a7a', to:'#7c2aaa', border:'rgba(167,100,247,.5)', text:'#c4b5fd'}, // purple
+  {from:'#7a2010', to:'#c03a18', border:'rgba(249,115,22,.5)',   text:'#fdba74'}, // orange
+  {from:'#1a4a10', to:'#2a7a18', border:'rgba(132,204,22,.5)',   text:'#bef264'}, // lime
+  {from:'#6a1040', to:'#aa1868', border:'rgba(236,72,153,.5)',   text:'#f9a8d4'}, // pink
+  {from:'#0a3a5a', to:'#0a6a9a', border:'rgba(14,165,233,.5)',   text:'#7dd3fc'}, // sky
+  {from:'#5a3a00', to:'#9a6200', border:'rgba(245,158,11,.5)',   text:'#fcd34d'}, // amber
+  {from:'#4a0a2a', to:'#7a1050', border:'rgba(220,60,150,.5)',   text:'#f0abda'}, // rose
+  {from:'#0a2a4a', to:'#0a4a7a', border:'rgba(56,130,246,.5)',   text:'#bfdbfe'}, // indigo
+];
+const _gpColorMap = {};
+function gpColor(gpName){
+  const key = (gpName||'—').toLowerCase().trim();
+  if(_gpColorMap[key] === undefined){
+    const idx = Object.keys(_gpColorMap).length % GP_COLORS.length;
+    _gpColorMap[key] = idx;
+  }
+  return GP_COLORS[_gpColorMap[key]];
+}
+function gpAvatarStyle(gpName, w='34px', h='34px', fs='12px'){
+  const c = gpColor(gpName);
+  return `background:linear-gradient(135deg,${c.from},${c.to});border:1px solid ${c.border};color:${c.text};width:${w};height:${h};font-size:${fs}`;
+}
+
+// ─── Render Executive View ────────────────────────────────────────────────────
+function barClass(pct){ return pct>=75?'fill-green':pct>=40?'fill-amber':'fill-red'; }
+function pctClass(pct){ return pct>=75?'pct-green':pct>=40?'pct-amber':'pct-red'; }
+
+function execRow(p){
+  const k=calcProjectKPI(p);
+  const sit=getSit(p);
+  const fase=getFase(p);
+  const initials=p.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const av=gpAvatarStyle(p.gp);
+  const isKpi=sit.kpi;
+  const isFocused=focusedId===p.id;
+
+  // Admin action buttons
+  const adminActions = IS_ADMIN ? `
+    <td onclick="event.stopPropagation()" style="text-align:right;white-space:nowrap">
+      <button class="icon-btn edit" onclick="window.openEditModal('${p.id}')" title="Editar projeto" style="display:inline-flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="icon-btn" onclick="window.openEditComps('${p.id}')" title="Editar documentos complementares" style="display:inline-flex;color:var(--blue)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </button>
+      <button class="icon-btn arch" onclick="window.archiveProject('${p.id}')" title="${p.archived?'Restaurar':'Arquivar'}" style="display:inline-flex">
+        ${p.archived
+          ? `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="m9 12 2 2 4-4"/></svg>`
+          : `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5" rx="1"/><path d="M10 12h4"/></svg>`
+        }
+      </button>
+      ${p.archived ? `<button class="icon-btn danger" onclick="window.confirmDelete('${p.id}')" title="Excluir permanentemente" style="display:inline-flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>` : ''}
+    </td>` : `<td></td>`;
+
+  return `<tr onclick="window.openPanel('${p.id}')" style="${isFocused?'background:rgba(43,188,176,.05);outline:1px solid rgba(43,188,176,.15);':''}cursor:pointer">
+    <td><div class="exec-name-cell">
+      <div class="proj-avatar" style="${gpAvatarStyle(p.gp,'30px','30px','11px')}">${initials}</div>
+      <div>
+        <div style="font-weight:500">${p.name}${p.pending?` <span style="font-size:10px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:2px 7px;border-radius:10px;margin-left:4px">⏳ Aguardando</span>`:''}</div>
+        <div class="exec-gp">${p.gp||'—'}</div>
+      </div>
+    </div></td>
+    <td><div class="sit-badge ${sit.cls}" style="font-size:10px">${sit.label}</div></td>
+    <td><span style="font-size:11px;color:var(--text2)">${fase.label}</span></td>
+    <td>${isKpi?`<div class="exec-bar-wrap">
+      <div class="exec-track"><div class="exec-fill ${barClass(k.pct)}" style="width:${k.pct}%"></div></div>
+      <span class="exec-pct ${pctClass(k.pct)}">${k.pct}%</span>
+    </div>`:'<span class="exec-dim">fora do KPI</span>'}</td>
+    <td>${isKpi?`<span class="exec-pend-val ${k.pendCrit===0?'ok':''}" title="${k.pend} pendência(s) total · ${k.pendCrit} crítica(s) de fases anteriores">${k.pendCrit}<span style="font-size:10px;opacity:.6">/${k.pend}</span></span>`:'<span class="exec-dim">—</span>'}</td>
+    <td>${isKpi?`<span style="font-size:12px;color:var(--text3)">${k.obOk}/${k.obTotal}</span>`:'<span class="exec-dim">—</span>'}</td>
+    ${adminActions}
+  </tr>`;
+}
+
+function renderExec(filter=''){
+  const q=filter.toLowerCase();
+  const active=projects.filter(p=>!p.archived&&
+    (IS_ADMIN ? true : !p.pending) &&
+    (p.name.toLowerCase().includes(q)||(p.gp||'').toLowerCase().includes(q)));
+  const inProgress=active.filter(p=>getSit(p).kpi && !p.pending);
+  const others=active.filter(p=>!getSit(p).kpi || p.pending);
+
+  let html=`<div class="exec-wrap">`;
+
+  if(inProgress.length>0){
+    html+=`<div class="exec-section-label" style="margin-bottom:10px">Em andamento — impactam os indicadores globais</div>
+    <table class="exec-table">
+      <thead><tr>
+        <th>Projeto</th><th>Situação</th><th>Fase</th><th>Conformidade</th><th>Pendências</th><th>Obrig. OK</th>
+        ${IS_ADMIN?'<th style="text-align:right">Ações</th>':''}
+      </tr></thead>
+      <tbody>`;
+    inProgress.forEach(p=>{ html+=execRow(p); });
+    html+=`</tbody></table>`;
+  }
+
+  if(others.length>0){
+    html+=`<div style="height:20px"></div>
+    <div class="exec-section-label">Demais projetos</div>
+    <table class="exec-table"><thead><tr>
+      <th>Projeto</th><th>Situação</th><th>Fase</th><th>Conformidade</th><th>Pendências</th><th>Obrig. OK</th>
+      ${IS_ADMIN?'<th style="text-align:right">Ações</th>':''}
+    </tr></thead><tbody>`;
+    others.forEach(p=>{ html+=execRow(p); });
+    html+=`</tbody></table>`;
+  }
+
+  if(inProgress.length===0 && others.length===0){
+    html+=`<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">Nenhum projeto encontrado</div>`;
+  }
+
+  html+=`</div>`;
+  document.getElementById('execView').innerHTML=html;
+  updateKPIs();
+}
+
+function load(){
+  // Always apply embedded brand logo
+  applyLogo("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCADIAMgDASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHAQUIAwIE/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAQFAgMGBwH/2gAMAwEAAhADEAAAAeqQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGIdlHmSGzEyMZAAAAAAAAADGYRnGhkOLny9N4Qfem1d2JTemhhLAAAAAAAAUjd3PUzmdSLLhQPS96E2Oi26Ka7Y1Po4fMwAAAAAAHP/AEBT0vnIKLPggANveHPH7Y910ch8br+xmVbRDFhx2wnFbyTLRe4p/TQAAAEckb7p5lxYFf3Xl4ZxQHtm7NNn5pYq+/pfT9AN9TTFpbVqsQ02YAAAAHzVNsNkHmb56DjE/j6j2tpy/GRpN+V/Yh82gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/EACQQAAEEAQMEAwEAAAAAAAAAAAUBAgMEBgAgQBAREzASFXAU/9oACAEBAAEFAvzVVRqWsqp13Vcqp2HIqOTiKvZDxxxCTpj51aT+JlV/+ansxcx5W8PJ7HmLbI3uieFKtKVeEWX5E9tC9IPs0L8RGvwTTPGV3DSUoyceRhJQ9CRysN1cyi5ZVSFpVx8/M6z6sureK/vqW5aUwvJILyGMoWTSr3Xpj9V1op6jw/7AfviifPIEBMGsIY3Vvas4rdhX6W93qYrcnUcNhGQ+vJgywSbYYX2JQoRguPguaj2mMYfEqp2XpQGTkpBQeEVHxLgmrf0/DqyrXxSlCscbYWfnn//EACkRAAEDAwIEBgMAAAAAAAAAAAIBAwQABRESIRMgMDEQFEFQUWEiIzL/2gAIAQMBAT8B9qekNMJl0sUzIakJlos9OQ+MZonS9KffOQauOLvUd84ziON1FkhKaR0OlfjVGBH5Xxt05YTm/wDK96EhMUIe3RvreqMhJ6LyW+5HDXSW4U5c4wNcXVmpV2kSFwK6U+qhPvjIDQvdeZ1oXgVsuy1JjnFcVs/GDAOae2w+q15KPwuDo/GjsUclyKqlRbcxE3BN/leeXDamDpcp2xyAX9eFSo1iNVzIXCfVNtAyKA2mE97/AP/EACQRAAICAQMEAgMAAAAAAAAAAAECAAMRBBIxECAhMBNQIkFC/9oACAECAQE/AfqlUtxGUrz60XecRVCjAjKHGDHQocH1aYflnrbX8ghGPB9OmOHx2W0izz+4KXLbYlCrLFXac9wO05ERg4yOtlgrE+Rs7swalo9rPz3pYaz4g1KnmPqR/MJLHJ+7/8QANhAAAQICBQkHAgcAAAAAAAAAAQIDABEEEiExQRATICIjMEBRcRQyQlJicpFhcDNTc6GisfD/2gAIAQEABj8C+2syZCKqKz59F0VV1mDzXdExaOFmYLTRlRh/LKGHlTo5uJ8HChlJ13r/AG6PY3Trp/DPMcuEWMGwEjRStJqqTaCIrXPJsWng6X+qr+9JLzZtF45iA60eo5HgqUPWTp5xu7xIwMZxo9U4jLJSq7v5aY2ZDCOSL/mJ9odn7zCaNSFZxK7EqN4O7S9g6n9x/huA4yuoqKrsmHuRuMFqhmqnF3E9Imb8rMrmzXJ6btSUjaI1k7hLbaSparABGcckukHHy9IKkjMOeZF3xGzCXx6TKJdlc+IGdkwj62mM20Oqjed4aWyNkrvgeE6SW20la1XARWVJdIVerl9BwRBEwbwYLtEFdvFvEdIkbDlqsosxUbhGrrunvOHhZvNAq8wsMarzqesjE113vcbICUJCEjAfb3//xAApEAEAAQIDBgcBAQAAAAAAAAABEQAhMUFRIEBhcYGREDChscHR8HDh/9oACAEBAAE/If5q5EBKuBTWCZj3NHZJgB6yjCCEiZ7qDIAXVpb7Ytn1eHDxb8mMw+qGSS5ujx9IQyGPfDvsxdmXfwj25bo0/PaKX1dlSaswGhSixGupwdzVToerayMQuGcNWjjZcdJ3JXs+9v8AO2PWXZMH9nQHm7F0fGW66XrpSw5qO58RUhvr/wBqdX2hgXOfLUYzj0H08guQdME0TOiLgLp2n4p57B/AOdIyKrq+Md2Lpi73jy3mjraYnUrDbcgmZNDgCvl4PtT0o5F3OiriWV2ajxGrkM8vsB81iFt8c8fMlcrPdHJ2nzhFK2IOFuQAMaASJTv8Qb/OPWkYELI+M1iNNz2ssDYXeBobrPfjdSpAZp9CicyZRdhWDHo4D+e//9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzbLzzzzzzzzzzj/1fzzzzzzzzy3767Xzzzzzzzyz775vP8rzzzzy9776t95zzzzzzx5/n7zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/8QAKBEBAAAEBAUFAQEAAAAAAAAAAQARITFBUWGBIDBxkaEQULHB8OHx/9oACAEDAQE/EPagxC5t+hdhIQmWHUucu0QO7gbtImcF40NCFiknZMnRiwg3MnEf1q8oG6mw+sy1Wn2ankpDpzVRMeSmEqfRmfMuC6ouYmp9lnSA5kNguuUsNZyl2hJoG7du+DSDB1ASaiLWe3a/ETtCTAl1LOCYJ1/nrKlB/gZvxdgIsIwbzzneet4kwmUx+SflhueesdrBsccglSyXP2Vor11UncaeWA5cipd7HmCKBYPe/wD/xAAfEQEAAgIBBQEAAAAAAAAAAAABABEhMSAQMEFQYVH/2gAIAQIBAT8Q9UvRuL0a7aCfMBHiOJo+1XP8HU8OzUROzs2i8nACmIxBUDtLfsdU0cnDcQT1s434J95BlIMx6x+c7pJW4wRRt+y8Fvu//8QAKRABAAECBQIGAgMAAAAAAAAAAREhMQBBUWFxQIEQIDCRobFw8MHh8f/aAAgBAQABPxD8aqscuAF1Wxhdk4TheYnkE3wBzMIpbsxygb4A+JOQNkczpQgMoQAXVxGh2HCT8y3c1t4SsjFMrc3tzK5nIEghIjInSS1+pVgfMm48qq3JTUivMVP9OjpLGsv7SdvKKKL0CZEwkhhk2QthTRky6NypTsgD4PNGqaQrPZPww5YkW103xanyQnRGVD2Rx+POpFarw3RMsnEjP9SB4aY+mzl4iuGUUHSdjzXQcMMVgobhM74Kj4mcvvgt+Z6Y2oCysspWPTjFl3KR6BRfStWasA6OG+0YOMlXtrKuk4qTVHjUDk92kZpARQlVur4qUKGUZCeQO/pzAvGFQMPInMYRSJCXHzggSLKP7fFlQ6km/wBTc7GENT1FLraeSFzcPIGwod4a7C4Z1WRJI97YRlmR49015GJYJSqmzW2QUO76iqYFLrWOp7LueaNgSJV/gLq0DBeiUyR+jVu8QdE8+xBIhEbjhx2X9oLKzfJ4IIEIlxPEIhglg+zYldMLQ0SA2D4M816VtFEVu9EvDJh+g7R3hi/JUWThF4VwcwYLNsFPx7//2Q==");
+  document.getElementById("companyName").textContent="DB Diagnósticos";
+}
+async function save(){
+  try{
+    const {doc,setDoc}=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await setDoc(doc(db,"pmo","projects"),{data:JSON.stringify(projects)});
+  }catch(e){ console.error("Erro ao salvar:",e); }
+  // Sincroniza projetos com Cloudflare KV para o Worker de e-mail
+  try{
+    await fetch('https://artia-proxy.vitormanu-dl05.workers.dev/sync-projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projects })
+    });
+  }catch(e){ console.warn('KV sync falhou:', e); }
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+function handleLogoUpload(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const data=ev.target.result;
+    localStorage.setItem("pmo_logo",data);
+    applyLogo(data);
+  };
+  reader.readAsDataURL(file);
+}
+function applyLogo(src){
+  const img=document.getElementById("logoImg");
+  img.src=src; img.style.display="block";
+  const area=document.getElementById("logoArea");
+  area.querySelector("svg").style.display="none";
+}
+
+// ─── Fase config ─────────────────────────────────────────────────────────────
+const FASES = {
+  priorizacao:  { label:"Priorização",               order:1, fases:["Priorização"] },
+  ideacao:      { label:"Ideação",                   order:2, fases:["Priorização","Ideação"] },
+  planejamento: { label:"Planejamento",              order:3, fases:["Priorização","Ideação","Planejamento"] },
+  execucao:     { label:"Execução",                  order:4, fases:["Priorização","Ideação","Planejamento","Execução"] },
+  encerramento: { label:"Encerramento",              order:5, fases:["Priorização","Ideação","Planejamento","Execução","Encerramento"] },
+};
+function getFase(p){ return FASES[p.fase||"encerramento"] || FASES.encerramento; }
+function isFaseAtiva(p, docFase){
+  const f=getFase(p);
+  return f.fases.includes(docFase);
+}
+
+// ─── KPI Calculation ─────────────────────────────────────────────────────────
+function getFaseOrder(docFase){
+  const map = {"Priorização":1,"Ideação":2,"Planejamento":3,"Execução":4,"Encerramento":5};
+  return map[docFase] || 0;
+}
+function calcProjectKPI(p){
+  const faseAtual = getFase(p);
+  const faseAtualOrder = faseAtual.order;
+  // Only count obrig docs from active phases
+  const ob=p.docs.filter(d=>d.tipo==="obrig" && isFaseAtiva(p, d.fase));
+  const obOk=ob.filter(d=>d.status==="ok").length;
+  const sc=p.docs.filter(d=>d.tipo==="sec");
+  const scOk=sc.filter(d=>d.status==="ok").length;
+  // Critical: missing docs from PREVIOUS phases only
+  const pendCrit=ob.filter(d=>d.status!=="ok" && getFaseOrder(d.fase) < faseAtualOrder).length;
+  // Normal: missing docs from CURRENT phase
+  const pendNormal=ob.filter(d=>d.status!=="ok" && getFaseOrder(d.fase) === faseAtualOrder).length;
+  const pend=ob.length-obOk;
+  // Conformidade: baseada APENAS nos docs de fases anteriores
+  const obAnterior=ob.filter(d=>getFaseOrder(d.fase) < faseAtualOrder);
+  const obAtual=ob.filter(d=>getFaseOrder(d.fase) === faseAtualOrder);
+  const obAnteriorOk=obAnterior.filter(d=>d.status==="ok").length;
+  const obAtualOk=obAtual.filter(d=>d.status==="ok").length;
+  // Se não tem fases anteriores (projeto na primeira fase), usa todos os docs
+  const pct = obAnterior.length
+    ? Math.round(obAnteriorOk/obAnterior.length*100)
+    : (ob.length ? Math.round(obOk/ob.length*100) : 100);
+  return{obTotal:ob.length,obOk,pend,pendCrit,pendNormal,scTotal:sc.length,scOk,pct};
+}
+
+function calcGlobalKPI(list){
+  let obTotal=0,obOk=0,pend=0,pendCrit=0,scTotal=0,scOk=0;
+  let anteriorTotal=0, anteriorOk=0;
+  list.forEach(p=>{
+    const k=calcProjectKPI(p);
+    obTotal+=k.obTotal; obOk+=k.obOk; pend+=k.pend;
+    pendCrit+=k.pendCrit;
+    scTotal+=k.scTotal; scOk+=k.scOk;
+    // Para conformidade global: só fases anteriores
+    const faseAtualOrder = getFase(p).order;
+    const ob=p.docs.filter(d=>d.tipo==="obrig" && isFaseAtiva(p, d.fase));
+    const ant=ob.filter(d=>getFaseOrder(d.fase) < faseAtualOrder);
+    anteriorTotal+=ant.length;
+    anteriorOk+=ant.filter(d=>d.status==="ok").length;
+  });
+  // Se não há docs anteriores (todos na primeira fase), usa total
+  const pct = anteriorTotal
+    ? Math.round(anteriorOk/anteriorTotal*100)
+    : (obTotal ? Math.round(obOk/obTotal*100) : 100);
+  return{obTotal,obOk,pend,pendCrit,scTotal,scOk,pct,count:list.length};
+}
+
+function updateKPIs(){
+  const active=projects.filter(p=>!p.archived);
+  const forKpi=active.filter(p=>getSit(p).kpi); // only "Em andamento"
+  let kpi,label="Conformidade Global",subtitle;
+
+  if(focusedId){
+    const p=projects.find(x=>x.id===focusedId);
+    if(p){
+      kpi=calcProjectKPI(p);
+      kpi.count=1;
+      label=`Conformidade · ${p.name}`;
+      subtitle=`${kpi.obOk} de ${kpi.obTotal} obrig. OK neste projeto`;
+    }
+  }
+  if(!kpi){
+    kpi=calcGlobalKPI(forKpi);
+    subtitle=`${kpi.obOk} de ${kpi.obTotal} docs obrigatórios — só projetos em andamento`;
+    kpi.count=forKpi.length;
+  }
+
+  document.getElementById("kpiAderencia").textContent=kpi.pct+"%";
+  document.getElementById("kpiAderenciaHint").textContent=kpi.obOk+" obrig. conformes";
+  document.getElementById("kpiPendencias").textContent=kpi.pendCrit!==undefined?kpi.pendCrit:kpi.pend;
+  document.getElementById("kpiPendenciasHint").textContent="pendências críticas";
+  document.getElementById("kpiProjetos").textContent=focusedId? "1" : kpi.count;
+  document.getElementById("kpiSec").textContent=kpi.scOk;
+  document.getElementById("kpiSecHint").textContent=`de ${kpi.scTotal} complementares`;
+  document.getElementById("kpiBarLabel").textContent=label;
+  document.getElementById("kpiBarPct").textContent=kpi.pct+"%";
+  document.getElementById("kpiBarFill").style.width=kpi.pct+"%";
+  document.getElementById("kpiBarHint").textContent=subtitle;
+  document.getElementById("activeCount").textContent=active.length;
+}
+
+// ─── Health ───────────────────────────────────────────────────────────────────
+function health(p){
+  const{pct}=calcProjectKPI(p);
+  if(pct>=75) return{label:pct+"% · Saudável",cls:"health-ok"};
+  if(pct>=40) return{label:pct+"% · Atenção",cls:"health-warn"};
+  return{label:pct+"% · Crítico",cls:"health-crit"};
+}
+
+// ─── Chip class ───────────────────────────────────────────────────────────────
+function chipCls(doc){
+  if(doc.tipo==="obrig") return doc.status==="ok"?"chip-ok":"chip-nok";
+  return doc.status==="ok"?"chip-sec-ok":"chip-sec";
+}
+
+// ─── Render Project ───────────────────────────────────────────────────────────
+function renderProject(p,container){
+  const h=health(p);
+  const k=calcProjectKPI(p);
+  const sit=getSit(p);
+  const initials=p.name.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  const isFocused=focusedId===p.id;
+
+  // group by phase
+  const phases={};
+  p.docs.forEach(d=>{
+    if(!phases[d.fase]) phases[d.fase]=[];
+    phases[d.fase].push(d);
+  });
+
+  let phasesHTML="";
+  for(const[fase,docs] of Object.entries(phases)){
+    phasesHTML+=`<div class="phase-tag">${fase}</div><div class="chips-wrap">`;
+    docs.forEach(doc=>{
+      const di=p.docs.indexOf(doc);
+      const cls=chipCls(doc);
+      const tipLabel=doc.tipo==="obrig"?"Obrigatório":"Complementar";
+      const statusLabel=doc.status==="ok"?"Conforme":"Pendente";
+      phasesHTML+=`<div class="chip ${cls}" onclick="toggleDoc('${p.id}',${di})" title="${doc.nome} · ${tipLabel} · ${statusLabel}"><span class="chip-dot"></span>${doc.nome}</div>`;
+    });
+    phasesHTML+="</div>";
+  }
+
+  const card=document.createElement("div");
+  card.className="project-card"+(isFocused?" focused":"")+(p.collapsed?" proj-card-collapsed":"");
+  card.setAttribute("data-pid",p.id);
+  card.style.animationDelay=container.children.length*0.04+"s";
+
+  card.innerHTML=`
+    <div class="proj-header" onclick="headerClick(event,'${p.id}')">
+      <div class="proj-avatar" style="${gpAvatarStyle(p.gp)}">${initials}</div>
+      <div class="proj-info">
+        <div class="proj-name">${p.name}${p.pending?` <span style="font-size:10px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:500">⏳ Aguardando aprovação</span>`:''}</div>
+        <div class="proj-gp">Responsável: ${p.gp||"—"}</div>
+      </div>
+      <div class="proj-meta">
+        <div class="sit-badge ${sit.cls}">${sit.label}</div>
+        <div class="sit-badge sit-aguardando" style="font-size:10px;opacity:.8">📍 ${getFase(p).label}</div>
+        ${sit.kpi ? `<div class="health-pill ${h.cls}"><span style="width:5px;height:5px;border-radius:50%;background:currentColor"></span>${h.label}</div>` : ''}
+        <div class="proj-actions" onclick="event.stopPropagation()">
+          ${(IS_READONLY || (IS_GP && !isGpOwner(p))) ? '' : `
+          <button class="icon-btn edit" onclick="openEditModal('${p.id}')" title="Editar projeto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>`}
+          <button class="icon-btn info" onclick="openPanel('${p.id}')" title="Ver detalhes">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h18v18H3z" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </button>
+          ${(IS_READONLY || IS_GP) ? '' : `
+          <button class="icon-btn" onclick="openEditComps('${p.id}')" title="Editar documentos complementares" style="color:var(--blue)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </button>
+          <button class="icon-btn arch" onclick="archiveProject('${p.id}')" title="${p.archived?'Restaurar projeto':'Arquivar projeto'}">
+            ${p.archived
+              ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="m9 12 2 2 4-4"/></svg>`
+              : `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 8v13H3V8"/><rect x="1" y="3" width="22" height="5" rx="1"/><path d="M10 12h4"/></svg>`
+            }
+          </button>
+          ${p.archived ? `
+          <button class="icon-btn danger" onclick="confirmDelete('${p.id}')" title="Excluir permanentemente">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>` : ''}`}
+        </div>
+        <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="docs-body" id="body_${p.id}" style="${p.collapsed?'max-height:0':'max-height:2000px'}">
+      <div class="docs-inner">${phasesHTML}</div>
+      <div class="proj-footer">
+        <div class="stat-item"><div class="stat-dot" style="background:var(--green)"></div>${k.obOk} conformes</div>
+        <div class="stat-item" style="color:var(--red-text)"><div class="stat-dot" style="background:var(--red)"></div>${k.pendCrit} crítica(s) · ${k.pendNormal} pendente(s)</div>
+        <div class="stat-item"><div class="stat-dot" style="background:#374151"></div>${k.scOk}/${k.scTotal} complementares</div>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+}
+
+// ─── Render All ───────────────────────────────────────────────────────────────
+function render(filter=""){
+  const list=document.getElementById("projectList");
+  const archList=document.getElementById("archivedList");
+  list.innerHTML=""; archList.innerHTML="";
+
+  const q=filter.toLowerCase();
+  const active=projects.filter(p=>!p.archived&&
+    (IS_GP ? true : !p.pending) && // GP sees their own pending; admin sees all non-pending
+    (p.name.toLowerCase().includes(q)||(p.gp||"").toLowerCase().includes(q)));
+  const archived=projects.filter(p=>p.archived&&(p.name.toLowerCase().includes(q)||(p.gp||"").toLowerCase().includes(q)));
+
+  if(active.length===0){
+    list.innerHTML=`<div class="empty">
+      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <div class="empty-title">Nenhum projeto ativo</div>
+      <div style="font-size:12px">Crie um projeto ou ajuste o filtro de busca</div>
+    </div>`;
+  } else {
+    active.forEach(p=>renderProject(p,list));
+  }
+
+  const archSec=document.getElementById("archSection");
+  if(archived.length>0){
+    archSec.style.display="block";
+    document.getElementById("archCount").textContent=archived.length;
+    if(showArch) archived.forEach(p=>renderProject(p,archList));
+  } else {
+    archSec.style.display="none";
+  }
+
+  updateKPIs();
+
+  // update panel if open
+  if(focusedId) updatePanelData(focusedId);
+
+  // always refresh exec view
+  renderExec(document.getElementById('searchInput').value);
+
+  // update notification bell
+  if(IS_ADMIN) updateNotifBell();
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+function headerClick(e,pid){
+  toggleCollapse(pid);
+}
+function toggleCollapse(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  p.collapsed=!p.collapsed; save();
+  render(document.getElementById("searchInput").value);
+}
+function toggleDoc(pid,di){
+  if(IS_READONLY) return;
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  if(IS_GP && !isGpOwner(p)) return;
+  p.docs[di].status=p.docs[di].status==="ok"?"nok":"ok";
+  save();
+  // Update panel without closing it
+  updateKPIs();
+  renderExec(document.getElementById('searchInput').value);
+  if(focusedId) updatePanelData(focusedId);
+  if(IS_ADMIN) updateNotifBell();
+}
+function archiveProject(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  p.archived=!p.archived;
+  if(focusedId===pid){ closePanel(); }
+  save();
+  render(document.getElementById("searchInput").value);
+}
+
+let pendingDeleteId=null;
+function confirmDelete(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  pendingDeleteId=pid;
+  document.getElementById("confirmProjectName").textContent=p.name;
+  document.getElementById("confirmOverlay").classList.add("open");
+}
+function closeConfirm(){
+  pendingDeleteId=null;
+  document.getElementById("confirmOverlay").classList.remove("open");
+}
+function executeDelete(){
+  if(!pendingDeleteId) return;
+  if(focusedId===pendingDeleteId) closePanel();
+  projects=projects.filter(x=>x.id!==pendingDeleteId);
+  save(); closeConfirm();
+  render(document.getElementById("searchInput").value);
+}
+function toggleArch(){
+  showArch=!showArch;
+  document.getElementById("archivedList").style.display=showArch?"block":"none";
+  document.getElementById("archChevron").style.transform=showArch?"rotate(90deg)":"";
+  if(showArch){
+    const archived=projects.filter(p=>p.archived);
+    const list=document.getElementById("archivedList");
+    list.innerHTML="";
+    archived.forEach(p=>renderProject(p,list));
+  }
+}
+
+// ─── Side Panel ───────────────────────────────────────────────────────────────
+function openPanel(pid){
+  // Toggle: click same project closes panel
+  if(focusedId===pid){
+    closePanel();
+    return;
+  }
+  focusedId=pid;
+  document.getElementById("sidePanel").classList.add("open");
+  updatePanelData(pid);
+  updateKPIs();
+  document.querySelectorAll(".project-card").forEach(c=>{
+    c.classList.toggle("focused",c.getAttribute("data-pid")===pid);
+  });
+}
+function closePanel(){
+  focusedId=null;
+  document.getElementById("sidePanel").classList.remove("open");
+  document.querySelectorAll(".project-card").forEach(c=>c.classList.remove("focused"));
+  updateKPIs();
+  // Remove click outside listener
+  document.removeEventListener("click", _panelOutsideClick);
+}
+
+let _panelOutsideClick = null;
+function updatePanelData(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  const k=calcProjectKPI(p);
+  const sit=getSit(p);
+  const fase=getFase(p);
+  document.getElementById("panelName").textContent=p.name;
+  const gpEl=document.getElementById("panelGP");
+  gpEl.innerHTML=`Responsável: ${p.gp||"—"} &nbsp;<span class="sit-badge ${sit.cls}" style="font-size:9px;padding:2px 7px">${sit.label}</span> &nbsp;<span class="sit-badge sit-aguardando" style="font-size:9px;padding:2px 7px">📍 ${fase.label}</span>`;
+  document.getElementById("panelAd").textContent=k.pct+"%";
+  document.getElementById("panelPend").textContent=k.pendCrit+" crítica(s) / "+k.pend+" total";
+  document.getElementById("panelObOk").textContent=k.obOk+"/"+k.obTotal;
+  document.getElementById("panelSecOk").textContent=k.scOk+"/"+k.scTotal;
+  document.getElementById("panelBar").style.width=k.pct+"%";
+
+  const canEdit = !IS_READONLY && (IS_ADMIN || isGpOwner(p));
+
+  // Obrigatórios agrupados por fase
+  const FASE_ORDER = ["Priorização","Ideação","Planejamento","Execução","Encerramento"];
+  const obEl = document.getElementById("panelObrigDocs");
+  obEl.innerHTML="";
+  FASE_ORDER.forEach(faseNome => {
+    const docs = p.docs.filter(d=>d.tipo==="obrig" && d.fase===faseNome);
+    if(!docs.length) return;
+    const isAtiva = isFaseAtiva(p, faseNome);
+    const title = document.createElement("div");
+    title.style.cssText=`font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin:10px 0 4px 0;opacity:${isAtiva?1:0.4}`;
+    title.textContent = faseNome + (isAtiva?"":" · fora do cálculo");
+    obEl.appendChild(title);
+    docs.forEach(doc => {
+      const di=p.docs.indexOf(doc);
+      const isOk=doc.status==="ok";
+      const row=document.createElement("div");
+      row.style.cssText=`display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:4px;border-radius:6px;background:var(--s2);border-left:3px solid ${isOk?"var(--green)":"var(--red)"};cursor:${canEdit?'pointer':'default'};transition:all .15s;opacity:${isAtiva?1:0.45}`;
+      if(canEdit){
+        row.onmouseover=()=>{ row.style.filter="brightness(1.15)"; };
+        row.onmouseout=()=>{ row.style.filter=""; };
+        row.onclick=()=>{ toggleDoc(pid,di); };
+      }
+      row.innerHTML=`<div style="flex:1;font-size:12px;color:var(--text2)">${doc.nome}</div>`;
+      obEl.appendChild(row);
+    });
+  });
+
+  // Complementares
+  const secDocs=p.docs.filter(d=>d.tipo==="sec");
+  const secEl=document.getElementById("panelSecDocs");
+  secEl.innerHTML="";
+  secDocs.forEach(doc=>{
+    const di=p.docs.indexOf(doc);
+    const isOk=doc.status==="ok";
+    const row=document.createElement("div");
+    row.style.cssText=`display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:4px;border-radius:6px;background:var(--s2);border-left:3px solid ${isOk?"rgba(34,197,94,.4)":"rgba(255,255,255,.08)"};cursor:${canEdit?'pointer':'default'};transition:all .15s`;
+    if(canEdit){
+      row.onmouseover=()=>{ row.style.filter="brightness(1.15)"; };
+      row.onmouseout=()=>{ row.style.filter=""; };
+      row.onclick=()=>{ toggleDoc(pid,di); };
+    }
+    row.innerHTML=`<div style="flex:1;font-size:12px;color:var(--text3)">${doc.nome}</div>`;
+    secEl.appendChild(row);
+  });
+}
+
+// ─── Theme Toggle ─────────────────────────────────────────────────────────────
+let isLight = localStorage.getItem('pmo_theme') === 'light';
+function applyTheme(){
+  document.body.classList.toggle('light', isLight);
+  const icon = document.getElementById('themeIcon');
+  if(isLight){
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  }
+}
+function toggleTheme(){
+  isLight = !isLight;
+  localStorage.setItem('pmo_theme', isLight ? 'light' : 'dark');
+  applyTheme();
+}
+applyTheme();
+
+// ─── PDF Export ───────────────────────────────────────────────────────────────
+function exportPDF(){
+  const title = `DB Diagnósticos · PMO · Auditoria de Projetos`;
+  const date = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
+  const active = projects.filter(p=>!p.archived && !p.pending);
+  const inProgress = active.filter(p=>getSit(p).kpi);
+  const others = active.filter(p=>!getSit(p).kpi);
+
+  let rows = (list) => list.map(p => {
+    const k = calcProjectKPI(p);
+    const sit = getSit(p);
+    const fase = getFase(p);
+    const bar = k.pct >= 75 ? '#0f6e56' : k.pct >= 40 ? '#ba7517' : '#d85a30';
+    return `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5;font-weight:500">${p.name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5;color:#4a5572">${p.gp||'—'}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5;color:#4a5572">${fase.label}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5">
+        <span style="background:${sit.cls.includes('andamento')?'#e1f5ee':sit.cls.includes('standby')?'#faeeda':sit.cls.includes('inviavel')||sit.cls.includes('cancelado')?'#fcebeb':'#eeedfe'};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;color:${sit.cls.includes('andamento')?'#085041':sit.cls.includes('standby')?'#633806':'#791f1f'}">${sit.label}</span>
+      </td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:80px;height:6px;background:#e4eaf5;border-radius:3px;overflow:hidden">
+            <div style="width:${k.pct}%;height:100%;background:${bar};border-radius:3px"></div>
+          </div>
+          <span style="font-weight:600;color:${bar}">${k.pct}%</span>
+        </div>
+      </td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5;font-weight:600;color:${k.pend>0?'#d85a30':'#0f6e56'}">${k.pend}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e4eaf5;color:#4a5572">${k.obOk}/${k.obTotal}</td>
+    </tr>`;
+  }).join('');
+
+  const globalKpi = calcGlobalKPI(inProgress);
+
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+  <title>${title}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#1a2030;padding:32px}
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #2bbcb0}
+    .logo-area{display:flex;align-items:center;gap:12px}
+    .company{font-size:20px;font-weight:700;color:#1a2030}
+    .subtitle{font-size:12px;color:#8892aa;margin-top:2px}
+    .date{font-size:12px;color:#8892aa}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+    .kpi{background:#f8f9fb;border:1px solid #e4eaf5;border-radius:8px;padding:12px 16px}
+    .kpi-l{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:#8892aa;margin-bottom:4px}
+    .kpi-v{font-size:24px;font-weight:700}
+    .section-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#8892aa;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e4eaf5}
+    table{width:100%;border-collapse:collapse;margin-bottom:24px}
+    th{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:#8892aa;padding:8px 12px;text-align:left;border-bottom:2px solid #e4eaf5}
+    .footer{text-align:center;font-size:11px;color:#8892aa;margin-top:16px;padding-top:16px;border-top:1px solid #e4eaf5}
+    @media print{body{padding:16px}}
+  </style></head><body>
+  <div class="header">
+    <div class="logo-area">
+      <div><div class="company">DB Diagnósticos</div><div class="subtitle">PMO · Auditoria de Projetos</div></div>
+    </div>
+    <div class="date">Gerado em ${date}</div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-l">Índice de Aderência</div><div class="kpi-v" style="color:#0f6e56">${globalKpi.pct}%</div></div>
+    <div class="kpi"><div class="kpi-l">Pendências Críticas</div><div class="kpi-v" style="color:#d85a30">${globalKpi.pendCrit}</div></div>
+    <div class="kpi"><div class="kpi-l">Projetos em Andamento</div><div class="kpi-v" style="color:#2bbcb0">${inProgress.length}</div></div>
+    <div class="kpi"><div class="kpi-l">Total de Projetos</div><div class="kpi-v">${active.length}</div></div>
+  </div>
+  <div class="section-title">Projetos em andamento — impactam os indicadores</div>
+  <table><thead><tr><th>Projeto</th><th>GP</th><th>Fase</th><th>Situação</th><th>Conformidade</th><th>Pendências</th><th>Obrig. OK</th></tr></thead>
+  <tbody>${rows(inProgress)}</tbody></table>
+  ${others.length>0?`<div class="section-title">Demais projetos</div><table><thead><tr><th>Projeto</th><th>GP</th><th>Fase</th><th>Situação</th><th>Conformidade</th><th>Pendências</th><th>Obrig. OK</th></tr></thead><tbody>${rows(others)}</tbody></table>`:''}
+  <div class="footer">DB Diagnósticos · PMO Dashboard · ${date}</div>
+  </body></html>`;
+
+  const win = window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(()=>win.print(), 500);
+}
+window.exportPDF = exportPDF;
+window.toggleTheme = toggleTheme;
+function showGpNameModal(){
+  document.getElementById('gpNameOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('gpNameInput').focus(), 150);
+}
+function confirmGpName(){
+  const name = document.getElementById('gpNameInput').value.trim();
+  if(!name){ document.getElementById('gpNameInput').focus(); return; }
+  GP_NAME = name;
+  sessionStorage.setItem('gp_name', GP_NAME);
+  document.getElementById('gpNameOverlay').classList.remove('open');
+  document.getElementById('gpBanner').querySelector('span').innerHTML =
+    `Você está no <strong>Modo GP · ${GP_NAME}</strong> — crie projetos e acompanhe seus documentos. Novos projetos aguardam aprovação do administrador.`;
+  render();
+}
+function closeGpSuccess(){
+  const ov = document.getElementById('gpSuccessOverlay');
+  ov.style.opacity='0'; ov.style.pointerEvents='none';
+  document.getElementById('gpSuccessModal').style.transform='translateY(20px) scale(.97)';
+}
+function showGpSuccess(){
+  const ov = document.getElementById('gpSuccessOverlay');
+  ov.style.opacity='1'; ov.style.pointerEvents='all';
+  ov.style.transition='opacity .2s';
+  setTimeout(()=>{ document.getElementById('gpSuccessModal').style.transform='translateY(0) scale(1)'; }, 10);
+}
+window.confirmGpName = confirmGpName;
+window.closeGpSuccess = closeGpSuccess;
+
+// ─── Notification Panel ───────────────────────────────────────────────────────
+function toggleNotifPanel(){
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+document.addEventListener('click', e=>{
+  const wrap = document.getElementById('notifWrap');
+  if(wrap && !wrap.contains(e.target)) document.getElementById('notifPanel').classList.remove('open');
+});
+function updateNotifBell(){
+  if(!IS_ADMIN) return;
+  const pending = projects.filter(p=>p.pending && !p.archived);
+  const btn = document.getElementById('notifBtn');
+  const wrap = document.getElementById('notifWrap');
+  if(!btn) return;
+  // Remove old badge
+  const oldBadge = btn.querySelector('.notif-badge');
+  if(oldBadge) oldBadge.remove();
+  if(pending.length>0){
+    btn.classList.add('has-pending');
+    btn.insertAdjacentHTML('beforeend',`<div class="notif-badge">${pending.length}</div>`);
+    document.getElementById('notifCount').textContent = pending.length+' pendente'+(pending.length>1?'s':'');
+  } else {
+    btn.classList.remove('has-pending');
+    document.getElementById('notifCount').textContent = '';
+  }
+  // Render notif list
+  const list = document.getElementById('notifList');
+  if(pending.length===0){
+    list.innerHTML='<div class="notif-empty">Nenhum projeto pendente 🎉</div>';
+    return;
+  }
+  list.innerHTML = pending.map(p=>`
+    <div class="notif-item">
+      <div class="notif-item-name">${p.name}</div>
+      <div class="notif-item-meta">
+        <span class="notif-meta-pill">👤 ${p.gp||'—'}</span>
+        <span class="notif-meta-pill">📍 ${getFase(p).label}</span>
+        <span class="notif-meta-pill sit-badge ${getSit(p).cls}" style="font-size:9px;padding:2px 7px">${getSit(p).label}</span>
+      </div>
+      <div class="notif-actions">
+        <button class="btn-approve" onclick="approveProject('${p.id}')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          Aprovar
+        </button>
+        <button class="btn-reject" onclick="rejectProject('${p.id}')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          Rejeitar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+function approveProject(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  p.pending=false;
+  save(); render(document.getElementById('searchInput').value);
+  updateNotifBell();
+}
+function rejectProject(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  pendingDeleteId=pid;
+  document.getElementById("confirmProjectName").textContent=p.name;
+  document.querySelector(".confirm-title").textContent="Rejeitar projeto?";
+  document.querySelector(".confirm-desc").textContent="O projeto será removido permanentemente. Esta ação não pode ser desfeita.";
+  document.querySelector(".btn-danger").innerHTML=`
+    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    Rejeitar e Remover
+  `;
+  document.getElementById("confirmOverlay").classList.add("open");
+}
+window.approveProject=approveProject;
+window.rejectProject=rejectProject;
+window.toggleNotifPanel=toggleNotifPanel;
+
+// ─── Modal (create + edit) ────────────────────────────────────────────────────
+function showWelcome(){
+  const ws = document.getElementById('welcomeScreen');
+  ws.style.display = 'flex';
+  // copy logo to welcome screen
+  const logoSrc = document.getElementById('logoImg').src;
+  document.getElementById('welcomeLogo').src = logoSrc;
+  // populate live stats
+  const active = projects.filter(p=>!p.archived && getSit(p).kpi);
+  let obTotal=0, obOk=0, pend=0;
+  active.forEach(p=>{ const k=calcProjectKPI(p); obTotal+=k.obTotal; obOk+=k.obOk; pend+=(k.pendCrit||k.pend); });
+  const pct = obTotal ? Math.round(obOk/obTotal*100) : 0;
+  document.getElementById('wStatAd').textContent   = pct+'%';
+  document.getElementById('wStatPend').textContent = pend;
+  document.getElementById('wStatProj').textContent = active.length;
+}
+function enterDashboard(){
+  // Request fullscreen on user gesture
+  if(document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  }
+  document.getElementById('welcomeScreen').style.display='none';
+}
+window.enterDashboard = enterDashboard;
+let editingId=null;
+
+function openModal(){
+  editingId=null;
+  document.getElementById("modalTitle").textContent="Novo Projeto";
+  document.getElementById("modalSub").textContent = IS_GP
+    ? "Preencha os dados. O projeto aguardará aprovação do administrador."
+    : "Preencha os dados e selecione os documentos complementares do projeto.";
+  document.getElementById("modalSaveBtn").textContent = IS_GP ? "Enviar para Aprovação" : "Criar Projeto";
+  document.getElementById("newName").value="";
+  document.getElementById("newGP").value= IS_GP ? GP_NAME : "";
+  document.getElementById("newSituacao").value="andamento";
+  document.getElementById("newFase").value="ideacao";
+  // Show complementares checkboxes for GP and Admin (on new project)
+  const secField = document.getElementById("secDocsField");
+  secField.style.display = "block";
+  const secDocs = DEFAULT_DOCS.filter(d=>d.tipo==="sec");
+  document.getElementById("secDocsList").innerHTML = secDocs.map(d=>`
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 0">
+      <input type="checkbox" value="${d.nome}" style="accent-color:#2bbcb0;width:14px;height:14px">
+      <span style="font-size:12px;color:var(--text2)">${d.nome}</span>
+      <span style="font-size:10px;color:var(--text3);margin-left:auto">${d.fase}</span>
+    </label>
+  `).join('');
+  document.getElementById("modalOverlay").classList.add("open");
+  setTimeout(()=>document.getElementById("newName").focus(),120);
+}
+function openEditModal(pid){
+  const p=projects.find(x=>x.id===pid); if(!p) return;
+  editingId=pid;
+  document.getElementById("modalTitle").textContent="Editar Projeto";
+  document.getElementById("modalSub").textContent="Atualize os dados do projeto.";
+  document.getElementById("modalSaveBtn").textContent="Salvar Alterações";
+  document.getElementById("newName").value=p.name;
+  document.getElementById("newGP").value=p.gp==="—"?"":p.gp;
+  document.getElementById("newSituacao").value=p.situacao||"andamento";
+  document.getElementById("newFase").value=p.fase||"ideacao";
+  document.getElementById("newArtiaId").value=p.artiaId||"";
+  document.getElementById("secDocsField").style.display="none";
+  document.getElementById("modalOverlay").classList.add("open");
+  setTimeout(()=>document.getElementById("newName").focus(),120);
+}
+function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); editingId=null; }
+
+// ─── Edit Complementares Modal ────────────────────────────────────────────────
+let editingCompsId = null;
+function openEditComps(pid){
+  const p = projects.find(x=>x.id===pid); if(!p) return;
+  editingCompsId = pid;
+  const secDocs = DEFAULT_DOCS.filter(d=>d.tipo==="sec");
+  const currentNames = p.docs.filter(d=>d.tipo==="sec").map(d=>d.nome);
+  document.getElementById("editCompsProjectName").textContent = p.name;
+  document.getElementById("editCompsList").innerHTML = secDocs.map(d=>`
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:5px 0;border-bottom:1px solid var(--border)">
+      <input type="checkbox" value="${d.nome}" ${currentNames.includes(d.nome)?'checked':''} style="accent-color:#2bbcb0;width:14px;height:14px;flex-shrink:0">
+      <span style="font-size:12px;color:var(--text2);flex:1">${d.nome}</span>
+      <span style="font-size:10px;color:var(--text3)">${d.fase}</span>
+    </label>
+  `).join('');
+  document.getElementById("editCompsOverlay").classList.add("open");
+}
+function closeEditComps(){ document.getElementById("editCompsOverlay").classList.remove("open"); editingCompsId=null; }
+function saveEditComps(){
+  const p = projects.find(x=>x.id===editingCompsId); if(!p) return;
+  const checked = [...document.querySelectorAll("#editCompsList input:checked")].map(i=>i.value);
+  // Keep all obrigatório docs with their current status
+  const obrigDocs = p.docs.filter(d=>d.tipo==="obrig");
+  // For sec docs: keep existing ones that are still checked (preserving status), add new ones as nok
+  const existingSec = p.docs.filter(d=>d.tipo==="sec");
+  const secDocs = checked.map(nome=>{
+    const existing = existingSec.find(d=>d.nome===nome);
+    if(existing) return existing;
+    const def = DEFAULT_DOCS.find(d=>d.nome===nome);
+    return {...def, status:"nok"};
+  });
+  p.docs = [...obrigDocs, ...secDocs];
+  save(); closeEditComps();
+  render(document.getElementById("searchInput").value);
+  if(focusedId===editingCompsId) updatePanelData(focusedId);
+}
+window.openEditComps = openEditComps;
+window.closeEditComps = closeEditComps;
+window.saveEditComps = saveEditComps;
+
+// ─── Sincronização Artia ───────────────────────────────────────────────────────
+const ARTIA_WORKER = 'https://artia-proxy.vitormanu-dl05.workers.dev/phases';
+const FASE_MAP = {
+  'Ideação': 'ideacao', 'Ideação da proposta de valor': 'ideacao',
+  'Planejamento': 'planejamento', 'Execução': 'execucao',
+  'Encerramento': 'encerramento', 'Priorização': 'priorizacao'
+};
+const SIT_MAP = {
+  'Em andamento': 'andamento',
+  'Aguardando início': 'aguardando',
+  'Stand by': 'standby',
+  'Implantado': 'finalizado',
+  'Cancelado': 'cancelado'
+};
+async function syncArtiaFases(){
+  try {
+    const res = await fetch(ARTIA_WORKER);
+    if(!res.ok) return;
+    const phases = await res.json();
+    let updated = 0;
+    projects.forEach(p => {
+      if(!p.artiaId) return;
+      const data = phases[String(p.artiaId)];
+      if(!data) return;
+      const faseKey = FASE_MAP[data.fase] || null;
+      const sitKey = SIT_MAP[data.situacao] || null;
+      if(faseKey && faseKey !== p.fase){ p.fase = faseKey; updated++; }
+      if(sitKey && sitKey !== p.situacao){ p.situacao = sitKey; updated++; }
+    });
+    if(updated > 0){
+      save();
+      render(document.getElementById("searchInput").value);
+      console.log(`Artia: ${updated} campo(s) atualizado(s)`);
+    }
+  } catch(e){ console.warn('Artia sync falhou:', e); }
+}
+// Sincroniza ao carregar e a cada 5 minutos
+syncArtiaFases();
+setInterval(syncArtiaFases, 5 * 60 * 1000);
+function saveModal(){
+  const name=document.getElementById("newName").value.trim();
+  if(!name){ document.getElementById("newName").focus(); return; }
+  const gp=document.getElementById("newGP").value.trim()||"—";
+  const situacao=document.getElementById("newSituacao").value;
+  const fase=document.getElementById("newFase").value;
+  const artiaId=document.getElementById("newArtiaId").value.trim();
+  if(editingId){
+    const p=projects.find(x=>x.id===editingId); if(!p) return;
+    p.name=name; p.gp=gp; p.situacao=situacao; p.fase=fase;
+    if(artiaId) p.artiaId=artiaId;
+  } else {
+    let docs = DEFAULT_DOCS.map(d=>({...d, status:"nok"}));
+    const checked=[...document.querySelectorAll("#secDocsList input:checked")].map(i=>i.value);
+    docs=docs.filter(d=>d.tipo==="obrig"||checked.includes(d.nome));
+    projects.push({
+      id:"p_"+Date.now(), name, gp, situacao, fase,
+      artiaId: artiaId||null,
+      archived:false, collapsed:false,
+      pending: IS_GP,
+      docs
+    });
+  }
+  save(); closeModal();
+  updateNotifBell();
+  render(document.getElementById("searchInput").value);
+  if(IS_GP) showGpSuccess();
+}
+document.getElementById("modalOverlay").addEventListener("click",e=>{
+  if(e.target===e.currentTarget) closeModal();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ closeModal(); closePanel(); closeConfirm(); closeGpSuccess(); }
+  if(e.key==="Enter"&&document.getElementById("modalOverlay").classList.contains("open")) saveModal();
+  if(e.key==="Enter"&&document.getElementById("gpNameOverlay").classList.contains("open")) confirmGpName();
+});
+document.getElementById("confirmOverlay").addEventListener("click",e=>{
+  if(e.target===e.currentTarget) closeConfirm();
+});
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+document.getElementById("searchInput").addEventListener("input",e=>{
+  render(e.target.value);
+});
+
+// ─── Init — Firebase real-time ────────────────────────────────────────────────
+load(); // apply logo + company name
+showLoading();
+
+// Migrate from localStorage if first time
+const localRaw = localStorage.getItem("pmo_v4");
+
+onSnapshot(doc(db,"pmo","projects"), async (snap) => {
+  if(snap.exists()){
+    projects = JSON.parse(snap.data().data);
+    hideLoading();
+    if(IS_READONLY){
+      document.getElementById('modalOverlay').remove();
+      document.querySelector('.btn-primary').style.display='none';
+      document.getElementById('togDetail').style.display='none';
+      document.getElementById('togExec').style.display='none';
+      setView('exec');
+      setTimeout(()=> showWelcome(), 300);
+    } else {
+      if(IS_GP){
+        document.getElementById('gpBanner').style.display='flex';
+        if(!GP_NAME){
+          showGpNameModal();
+        } else {
+          document.getElementById('gpBanner').querySelector('span').innerHTML =
+            `Você está no <strong>Modo GP · ${GP_NAME}</strong> — crie projetos e acompanhe seus documentos. Novos projetos aguardam aprovação do administrador.`;
+          render();
+        }
+      }
+      if(IS_ADMIN){
+        document.getElementById('notifWrap').style.display='flex';
+        document.getElementById('pdfBtn').style.display='flex';
+        updateNotifBell();
+      }
+      render();
+    }
+  } else if(localRaw){
+    projects = JSON.parse(localRaw);
+    await save();
+    hideLoading();
+    render();
+  } else {
+    projects = [{
+      id:"p_"+Date.now(), name:"Guia de Exames", gp:"—",
+      situacao:"andamento", archived:false, collapsed:false,
+      docs:freshDocs(true)
+    }];
+    await save();
+    hideLoading();
+    render();
+  }
+}, (err)=>{
+  hideLoading();
+  console.error("Firebase error:",err);
+  if(localRaw){ projects=JSON.parse(localRaw); render(); }
+});
+
+// ─── Expor funções globalmente (necessário com type="module") ─────────────────
+window.toggleDoc       = toggleDoc;
+window.toggleCollapse  = toggleCollapse;
+window.headerClick     = headerClick;
+window.archiveProject  = archiveProject;
+window.confirmDelete   = confirmDelete;
+window.closeConfirm    = closeConfirm;
+window.executeDelete   = executeDelete;
+window.openPanel       = openPanel;
+window.closePanel      = closePanel;
+window.openModal       = openModal;
+window.openEditModal   = openEditModal;
+window.closeModal      = closeModal;
+window.saveModal       = saveModal;
+window.setView         = setView;
+window.toggleArch      = toggleArch;
+window.approveProject  = approveProject;
+window.rejectProject   = rejectProject;
+window.toggleNotifPanel= toggleNotifPanel;
+</script>
+
+<!-- Edit Complementares Modal -->
+<div class="overlay" id="editCompsOverlay">
+  <div class="modal" style="max-width:440px;max-height:80vh;overflow-y:auto">
+    <div class="modal-title">Editar Complementares</div>
+    <div class="modal-sub" id="editCompsProjectName" style="color:var(--blue);font-weight:600;margin-bottom:8px"></div>
+    <div class="modal-sub">Selecione os documentos complementares que este projeto utilizará. Documentos já marcados como OK terão seu status preservado.</div>
+    <div id="editCompsList" style="margin:16px 0;max-height:360px;overflow-y:auto"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeEditComps()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEditComps()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
