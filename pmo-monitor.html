@@ -52,23 +52,34 @@
   .insight-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
   .insight-title{font-size:12px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 
-  /* GAUGE */
-  .gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
-  .gauge-svg{width:160px;height:90px;}
-  .gauge-val{font-size:28px;font-weight:700;letter-spacing:-1px;}
-  .gauge-label{font-size:12px;color:var(--muted2);}
+  /* GAUGE TOGGLE */
+  .insight-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .toggle-btns{display:flex;gap:4px;}
+  .toggle-btn{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted2);font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .toggle-btn.active{background:rgba(0,181,174,0.1);border-color:var(--accent);color:var(--accent);}
+  .gauge-view,.trend-view{display:none;}
+  .gauge-view.active,.trend-view.active{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .trend-chart{width:100%;height:90px;position:relative;}
 
   /* GP CHART */
-  .gp-list{display:flex;flex-direction:column;gap:10px;}
+  .gp-list{display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto;padding-right:4px;}
+  .gp-list::-webkit-scrollbar{width:3px;}
+  .gp-list::-webkit-scrollbar-track{background:transparent;}
+  .gp-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
   .gp-item{display:flex;flex-direction:column;gap:5px;}
   .gp-item-top{display:flex;justify-content:space-between;align-items:center;}
   .gp-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
   .gp-count{font-size:11px;font-weight:600;color:#fca5a5;}
+  .gp-count.ok{color:#6ee7b7;}
   .gp-bar-bg{height:4px;background:var(--border2);border-radius:2px;}
   .gp-bar{height:4px;background:linear-gradient(90deg,var(--danger),#f87171);border-radius:2px;transition:width 0.8s ease;}
+  .gp-bar.ok{background:linear-gradient(90deg,var(--accent),#6ee7b7);}
 
-  /* TOP 5 */
-  .top5-list{display:flex;flex-direction:column;gap:8px;}
+  /* TOP PROJETOS SCROLL */
+  .top5-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:4px;}
+  .top5-list::-webkit-scrollbar{width:3px;}
+  .top5-list::-webkit-scrollbar-track{background:transparent;}
+  .top5-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
   .top5-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
   .top5-rank{font-size:11px;font-weight:700;color:var(--muted);width:16px;text-align:center;flex-shrink:0;}
   .top5-nome{font-size:12px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -231,28 +242,38 @@
   <div class="insights-grid">
     <!-- GAUGE -->
     <div class="insight-card">
-      <div class="insight-title">📊 Taxa de Conformidade</div>
-      <div class="gauge-wrap">
-        <svg class="gauge-svg" viewBox="0 0 160 90">
+      <div class="insight-title-row">
+        <div class="insight-title" style="margin-bottom:0;">📊 Taxa de Conformidade</div>
+        <div class="toggle-btns">
+          <button class="toggle-btn active" id="btn-gauge" onclick="toggleGaugeView('gauge')">Atual</button>
+          <button class="toggle-btn" id="btn-trend" onclick="toggleGaugeView('trend')">Histórico</button>
+        </div>
+      </div>
+      <div class="gauge-view active" id="gauge-view">
+        <svg class="gauge-svg" viewBox="0 0 160 90" style="width:160px;height:90px;">
           <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="#1e2d45" stroke-width="12" stroke-linecap="round"/>
           <path id="gauge-arc" d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 188"/>
         </svg>
         <div class="gauge-val" id="gauge-pct" style="color:#6ee7b7;margin-top:-20px;">—%</div>
         <div class="gauge-label">projetos em dia</div>
       </div>
+      <div class="trend-view" id="trend-view">
+        <svg id="trend-svg" viewBox="0 0 260 90" style="width:100%;height:90px;"></svg>
+        <div style="font-size:10px;color:var(--muted2);margin-top:4px;">Últimas sincronizações</div>
+      </div>
     </div>
 
     <!-- GP RANKING -->
     <div class="insight-card">
-      <div class="insight-title">👤 GPs com Mais Pendências</div>
+      <div class="insight-title">👤 Todos os GPs</div>
       <div class="gp-list" id="gp-ranking">
         <div style="color:var(--muted);font-size:12px;">Carregando...</div>
       </div>
     </div>
 
-    <!-- TOP 5 ATRASADOS -->
+    <!-- TODOS DESATUALIZADOS -->
     <div class="insight-card">
-      <div class="insight-title">🔴 Top 5 Mais Desatualizados</div>
+      <div class="insight-title">🔴 Projetos Desatualizados</div>
       <div class="top5-list" id="top5-list">
         <div style="color:var(--muted);font-size:12px;">Carregando...</div>
       </div>
@@ -379,6 +400,40 @@
     document.getElementById('badge-ok').textContent=ok;
   }
 
+  // Histórico do gauge (armazena últimas leituras em sessão)
+  const gaugeHistorico=[];
+
+  function toggleGaugeView(view) {
+    document.getElementById('gauge-view').classList.toggle('active', view==='gauge');
+    document.getElementById('trend-view').classList.toggle('active', view==='trend');
+    document.getElementById('btn-gauge').classList.toggle('active', view==='gauge');
+    document.getElementById('btn-trend').classList.toggle('active', view==='trend');
+    if(view==='trend') renderTrend();
+  }
+
+  function renderTrend() {
+    const svg=document.getElementById('trend-svg');
+    if(gaugeHistorico.length<2){
+      svg.innerHTML=`<text x="130" y="50" text-anchor="middle" fill="#3d4f63" font-size="11" font-family="Inter">Atualize algumas vezes para ver o histórico</text>`;
+      return;
+    }
+    const W=260,H=80,pad=16;
+    const vals=gaugeHistorico.map(h=>h.pct);
+    const min=Math.max(0,Math.min(...vals)-10);
+    const max=Math.min(100,Math.max(...vals)+10);
+    const xStep=(W-pad*2)/(vals.length-1);
+    const yScale=(v)=>H-pad-((v-min)/(max-min||1))*(H-pad*2);
+    const pts=vals.map((v,i)=>`${pad+i*xStep},${yScale(v)}`).join(' ');
+    const color=vals[vals.length-1]>=80?'#10b981':vals[vals.length-1]>=50?'#f59e0b':'#ef4444';
+    svg.innerHTML=`
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${vals.map((v,i)=>`
+        <circle cx="${pad+i*xStep}" cy="${yScale(v)}" r="3" fill="${color}"/>
+        <text x="${pad+i*xStep}" y="${yScale(v)-7}" text-anchor="middle" fill="${color}" font-size="9" font-family="Inter">${v}%</text>
+      `).join('')}
+    `;
+  }
+
   function renderInsights() {
     const total=todosProjetos.length;
     const ok=todosOk.length;
@@ -395,28 +450,41 @@
     pctEl.textContent=`${pct}%`;
     pctEl.style.color=color==='#10b981'?'#6ee7b7':color==='#f59e0b'?'#fcd34d':'#fca5a5';
 
-    // GP ranking
+    // Salva no histórico (evita duplicar o mesmo valor consecutivo)
+    const ultimo=gaugeHistorico[gaugeHistorico.length-1];
+    if(!ultimo||ultimo.pct!==pct) gaugeHistorico.push({pct, t:new Date()});
+    if(gaugeHistorico.length>12) gaugeHistorico.shift();
+
+    // GP ranking — TODOS os GPs, com e sem pendências
     const gpMap={};
     todosAlertas.forEach(a=>{
       const gp=a.gp||'Sem GP';
       if(!gpMap[gp]) gpMap[gp]=0;
       gpMap[gp]++;
     });
-    const gpSorted=Object.entries(gpMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    // Adiciona GPs sem pendência (dos projetos em dia)
+    todosProjetos.forEach(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=det.gp||alertasMap[p.id]?.gp||'Sem GP';
+      if(!(gp in gpMap)) gpMap[gp]=0;
+    });
+    const gpSorted=Object.entries(gpMap).sort((a,b)=>b[1]-a[1]);
     const maxGp=gpSorted[0]?.[1]||1;
     document.getElementById('gp-ranking').innerHTML=gpSorted.length===0
-      ?`<div style="color:var(--muted);font-size:12px;">Nenhuma pendência</div>`
-      :gpSorted.map(([gp,count])=>`
-        <div class="gp-item" style="cursor:pointer;" onclick="filtrarPorGP('${gp.replace(/'/g,"\\'")}')" title="Clique para ver pendências de ${gp.replace(/'/g,"\\'")}">
+      ?`<div style="color:var(--muted);font-size:12px;">Nenhum GP cadastrado</div>`
+      :gpSorted.map(([gp,count])=>{
+        const semPendencia=count===0;
+        return `
+        <div class="gp-item" style="cursor:pointer;" onclick="filtrarPorGP('${gp.replace(/'/g,"\\'")}')" title="Ver projetos de ${gp.replace(/'/g,"\\'")}">
           <div class="gp-item-top">
-            <span class="gp-name" style="color:var(--accent)">${gp}</span>
-            <span class="gp-count">${count} pendência${count>1?'s':''}</span>
+            <span class="gp-name" style="color:${semPendencia?'var(--accent)':'#fca5a5'}">${gp}</span>
+            <span class="gp-count ${semPendencia?'ok':''}">${semPendencia?'✓ Em dia':`${count} pendência${count>1?'s':''}`}</span>
           </div>
-          <div class="gp-bar-bg"><div class="gp-bar" style="width:${(count/maxGp)*100}%"></div></div>
-        </div>`).join('');
+          <div class="gp-bar-bg"><div class="gp-bar ${semPendencia?'ok':''}" style="width:${semPendencia?'100':(count/maxGp)*100}%;opacity:${semPendencia?0.4:1};"></div></div>
+        </div>`;
+      }).join('');
 
-    // Top 5 mais desatualizados
-    const agora=new Date();
+    // Todos os projetos com status atrasado, scrollável
     const comDias=todosAlertas
       .filter(a=>a.problemas.some(p=>p.tipo==='status'))
       .map(a=>{
@@ -424,11 +492,10 @@
         const match=prob?.mensagem?.match(/(\d+) dias/);
         return {...a, dias: match?parseInt(match[1]):0};
       })
-      .sort((a,b)=>b.dias-a.dias)
-      .slice(0,5);
+      .sort((a,b)=>b.dias-a.dias);
 
     document.getElementById('top5-list').innerHTML=comDias.length===0
-      ?`<div style="color:var(--muted);font-size:12px;">Nenhum status atrasado</div>`
+      ?`<div style="color:var(--muted);font-size:12px;">Nenhum status atrasado 🎉</div>`
       :comDias.map((a,i)=>`
         <div class="top5-item">
           <span class="top5-rank">${i+1}</span>
