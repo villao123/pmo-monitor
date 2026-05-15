@@ -493,7 +493,7 @@
         <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};"></div><span>${p.nome||p.id}</span></div>
         <div class="projeto-badges">${badges}</div>
         <div class="row-actions" onclick="event.stopPropagation()">
-          <button class="btn-row edit" title="Editar" onclick="editarProjeto('${p.id}','${nomeEsc}')">✎</button>
+          <button class="btn-row edit" title="Editar" onclick="editarProjeto('${p.id}')">✎</button>
           <button class="btn-row expand" id="expand-${p.id}" onclick="toggleDetalhe('${p.id}')">▾</button>
         </div>
       </div>
@@ -591,14 +591,15 @@
     document.getElementById('modal-overlay').classList.add('open');
   }
 
-  function editarProjeto(id, nome) {
+  function editarProjeto(id) {
     const alerta=alertasMap[id];
     const proj=todosProjetos.find(p=>p.id===id);
+    const nomeReal=proj?.nome||projetosDetalhes[id]?.nome||alerta?.nome||id;
     document.getElementById('modal-title').textContent='Editar Projeto';
     document.getElementById('f-editid').value=id;
     document.getElementById('f-id').value=id;
     document.getElementById('f-id').disabled=true;
-    document.getElementById('f-nome').value=nome;
+    document.getElementById('f-nome').value=nomeReal;
     document.getElementById('f-gp').value=projetosDetalhes[id]?.gp||alerta?.gp||'';
     document.getElementById('f-data').value=new Date().toISOString().split('T')[0];
     document.getElementById('f-atencao').checked=alerta?!alerta.problemas.some(p=>p.tipo==='risco'):true;
