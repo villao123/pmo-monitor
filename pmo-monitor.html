@@ -484,13 +484,13 @@
         ?`<span class="pbadge ${quaseVencendo?'pbadge-orange':'pbadge-green'}">${quaseVencendo?'⚡ Vence em breve':'✓ Em dia'}</span>`
         :`${temStatus?`<span class="pbadge pbadge-red">⏰ Status atrasado</span>`:''}${temAtencao?`<span class="pbadge pbadge-yellow">⚠️ Sem pontos de atenção</span>`:''}`;
 
-      const nomeEsc=(p.nome||p.id).replace(/'/g,"\\'");
       const gp=det.gp||a?.gp||'—';
       const statusReportVal=temStatus?temStatus.mensagem:`Em dia · ${diasStr}`;
       const statusReportClass=temStatus?'alert':quaseVencendo?'warn':'ok';
+      const nomeExibido=p.nome||p.id;
 
       return `<div class="projeto-row"><div class="projeto-main" onclick="toggleDetalhe('${p.id}')">
-        <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};"></div><span>${p.nome||p.id}</span></div>
+        <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};flex-shrink:0;"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nomeExibido}</span></div>
         <div class="projeto-badges">${badges}</div>
         <div class="row-actions" onclick="event.stopPropagation()">
           <button class="btn-row edit" title="Editar" onclick="editarProjeto('${p.id}')">✎</button>
@@ -505,8 +505,8 @@
           <div><div class="detalhe-label">ID no Artia</div><div class="detalhe-val muted">${p.id}</div></div>
         </div>
         <div class="detalhe-actions">
-          <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;margin-right:8px;" onclick="abrirRaioX('${p.id}','${nomeEsc}')">📋 Ver detalhes</button>
-          <button class="btn-excluir-full" onclick="excluirProjeto('${p.id}','${nomeEsc}')">🗑️ Excluir projeto</button>
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;margin-right:8px;" onclick="abrirRaioX('${p.id}')">📋 Ver detalhes</button>
+          <button class="btn-excluir-full" onclick="excluirProjeto('${p.id}')">🗑️ Excluir projeto</button>
         </div>
       </div></div>`;
     }).join('');
@@ -634,7 +634,9 @@
   }
   function fecharConfirm(){document.getElementById('confirm-overlay').classList.remove('open');confirmCallback=null;}
 
-  async function excluirProjeto(id,nome) {
+  async function excluirProjeto(id) {
+    const proj=todosProjetos.find(p=>p.id===id);
+    const nome=proj?.nome||projetosDetalhes[id]?.nome||alertasMap[id]?.nome||id;
     abrirConfirm(`Excluir "${nome}"?`,'Essa ação não pode ser desfeita.',async()=>{
       try {
         const res=await fetch(`${WORKER}/projetos/${id}`,{method:'DELETE'});
@@ -651,7 +653,9 @@
     setTimeout(()=>{el.className='';},3000);
   }
 
-  function abrirRaioX(id, nome) {
+  function abrirRaioX(id) {
+    const proj=todosProjetos.find(p=>p.id===id);
+    const nome=proj?.nome||projetosDetalhes[id]?.nome||alertasMap[id]?.nome||id;
     const det=projetosDetalhes[id]||{};
     const a=alertasMap[id];
     document.getElementById('raio-x-titulo').textContent=`📋 ${nome}`;
