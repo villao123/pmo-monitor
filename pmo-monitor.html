@@ -484,10 +484,10 @@
         ?`<span class="pbadge ${quaseVencendo?'pbadge-orange':'pbadge-green'}">${quaseVencendo?'⚡ Vence em breve':'✓ Em dia'}</span>`
         :`${temStatus?`<span class="pbadge pbadge-red">⏰ Status atrasado</span>`:''}${temAtencao?`<span class="pbadge pbadge-yellow">⚠️ Sem pontos de atenção</span>`:''}`;
 
+      const nomeExibido=p.nome||p.id;
       const gp=det.gp||a?.gp||'—';
       const statusReportVal=temStatus?temStatus.mensagem:`Em dia · ${diasStr}`;
       const statusReportClass=temStatus?'alert':quaseVencendo?'warn':'ok';
-      const nomeExibido=p.nome||p.id;
 
       return `<div class="projeto-row"><div class="projeto-main" onclick="toggleDetalhe('${p.id}')">
         <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};flex-shrink:0;"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nomeExibido}</span></div>
@@ -594,14 +594,18 @@
   function editarProjeto(id) {
     const alerta=alertasMap[id];
     const proj=todosProjetos.find(p=>p.id===id);
-    const nomeReal=proj?.nome||projetosDetalhes[id]?.nome||alerta?.nome||id;
+    const det=projetosDetalhes[id]||{};
+    const nomeReal=proj?.nome||det?.nome||alerta?.nome||id;
+    const gpReal=det?.gp||alerta?.gp||'';
     document.getElementById('modal-title').textContent='Editar Projeto';
     document.getElementById('f-editid').value=id;
     document.getElementById('f-id').value=id;
     document.getElementById('f-id').disabled=true;
     document.getElementById('f-nome').value=nomeReal;
-    document.getElementById('f-gp').value=projetosDetalhes[id]?.gp||alerta?.gp||'';
-    document.getElementById('f-data').value=new Date().toISOString().split('T')[0];
+    document.getElementById('f-gp').value=gpReal;
+    document.getElementById('f-data').value=det?.ultimasInfo_atualizado
+      ? new Date(det.ultimasInfo_atualizado).toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0];
     document.getElementById('f-atencao').checked=alerta?!alerta.problemas.some(p=>p.tipo==='risco'):true;
     document.getElementById('modal-overlay').classList.add('open');
   }
@@ -636,7 +640,8 @@
 
   async function excluirProjeto(id) {
     const proj=todosProjetos.find(p=>p.id===id);
-    const nome=proj?.nome||projetosDetalhes[id]?.nome||alertasMap[id]?.nome||id;
+    const det=projetosDetalhes[id]||{};
+    const nome=proj?.nome||det?.nome||alertasMap[id]?.nome||id;
     abrirConfirm(`Excluir "${nome}"?`,'Essa ação não pode ser desfeita.',async()=>{
       try {
         const res=await fetch(`${WORKER}/projetos/${id}`,{method:'DELETE'});
@@ -655,9 +660,9 @@
 
   function abrirRaioX(id) {
     const proj=todosProjetos.find(p=>p.id===id);
-    const nome=proj?.nome||projetosDetalhes[id]?.nome||alertasMap[id]?.nome||id;
     const det=projetosDetalhes[id]||{};
     const a=alertasMap[id];
+    const nome=proj?.nome||det?.nome||a?.nome||id;
     document.getElementById('raio-x-titulo').textContent=`📋 ${nome}`;
 
     const ultData=det.ultimasInfo_atualizado;
