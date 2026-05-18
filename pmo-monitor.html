@@ -681,7 +681,8 @@
   function fecharModalOverlay(e){if(e.target.id==='modal-overlay') fecharModal();}
 
   async function salvarProjeto() {
-    const id=document.getElementById('f-id').value.trim();
+    const editId=document.getElementById('f-editid').value.trim();
+    const id=editId||document.getElementById('f-id').value.trim();
     const nome=document.getElementById('f-nome').value.trim();
     const gp=document.getElementById('f-gp').value.trim();
     const data=document.getElementById('f-data').value;
