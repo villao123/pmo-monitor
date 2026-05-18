@@ -551,7 +551,7 @@
         ?`<span class="pbadge ${quaseVencendo?'pbadge-orange':'pbadge-green'}">${quaseVencendo?'⚡ Vence em breve':'✓ Em dia'}</span>`
         :`${temStatus?`<span class="pbadge pbadge-red">⏰ Status atrasado</span>`:''}${temAtencao?`<span class="pbadge pbadge-yellow">⚠️ Sem pontos de atenção</span>`:''}`;
 
-      const nomeExibido=p.nome||p.id;
+      const nomeExibido=det.nome||p.nome||p.id;
       const gp=det.gp||a?.gp||'—';
       const statusReportVal=temStatus?temStatus.mensagem:`Em dia · ${diasStr}`;
       const statusReportClass=temStatus?'alert':quaseVencendo?'warn':'ok';
@@ -662,7 +662,7 @@
     const alerta=alertasMap[id];
     const proj=todosProjetos.find(p=>p.id===id);
     const det=projetosDetalhes[id]||{};
-    const nomeReal=proj?.nome||det?.nome||alerta?.nome||id;
+    const nomeReal=det?.nome||proj?.nome||alerta?.nome||id;
     const gpReal=det?.gp||alerta?.gp||'';
     document.getElementById('modal-title').textContent='Editar Projeto';
     document.getElementById('f-editid').value=id;
