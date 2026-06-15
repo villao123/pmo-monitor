@@ -1,425 +1,810 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PMO Monitor · Grupo DB</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: linear-gradient(135deg, #0a0c10 0%, #16191f 100%);
-      color: #f0f4ff;
-      min-height: 100vh;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoramento de Atualizações de Projetos — Grupo DB</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0c10;--surface:#111318;--surface2:#16191f;--border:#1c2128;--border2:#252c35;
+    --accent:#00e5a0;--accent2:#00b5ae;--danger:#ef4444;--warning:#f59e0b;--success:#00e5a0;
+    --text:#f0f4ff;--muted:#3d4f63;--muted2:#6b8299;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
-    .container { max-width: 1200px; margin: 0 auto; }
+  .wrap{max-width:1400px;margin:0 auto;padding:0 40px;position:relative;z-index:1;}
 
-    header {
-      background: linear-gradient(90deg, #0d2e2b 0%, #1a4a44 100%);
-      padding: 24px;
-      border-radius: 12px;
-      margin-bottom: 32px;
-      border: 1px solid rgba(0,229,160,0.2);
-      box-shadow: 0 8px 32px rgba(0,229,160,0.1);
-    }
+  /* HEADER */
+  header{padding:18px 0;border-bottom:1px solid var(--border);margin-bottom:28px;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+  .logo-area{display:flex;align-items:center;gap:14px;}
+  .logo-img{width:36px;height:36px;object-fit:contain;}
+  .logo-text h1{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.2;}
+  .logo-text p{font-size:11px;color:var(--muted2);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;}
+  .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .live-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);font-size:11px;color:#6ee7b7;font-weight:500;}
+  .dot{width:6px;height:6px;border-radius:50%;background:#10b981;animation:blink 2s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all 0.18s;white-space:nowrap;}
+  .btn-primary{background:var(--accent);color:#0a0c10;font-weight:600;}
+  .btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,181,174,0.3);}
+  .btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border2);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #fff;
-    }
+  /* STATS */
+  .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .stat-card.si-teal::before{background:var(--accent2);}
+  .stat-card.si-red::before{background:var(--danger);}
+  .stat-card.si-yellow::before{background:var(--warning);}
+  .stat-card.si-green::before{background:var(--accent);}
+  .stat-card:hover{border-color:var(--border2);}
+  .stat-icon{display:none;}
+  .stat-val{font-size:32px;font-weight:700;line-height:1;letter-spacing:-1.5px;margin-bottom:4px;}
+  .stat-val.teal{color:var(--accent2);}.stat-val.red{color:#fca5a5;}.stat-val.yellow{color:#fcd34d;}.stat-val.green{color:var(--accent);}
+  .stat-label{font-size:11px;color:var(--muted2);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;font-weight:500;}
 
-    .header-meta {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
+  /* INSIGHTS GRID */
+  .insights-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px;}
+  .insight-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
+  .insight-title{font-size:12px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
+  /* GAUGE TOGGLE */
+  .insight-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .toggle-btns{display:flex;gap:4px;}
+  .toggle-btn{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted2);font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .toggle-btn.active{background:rgba(0,181,174,0.1);border-color:var(--accent);color:var(--accent);}
+  .gauge-view,.trend-view{display:none;}
+  .gauge-view.active,.trend-view.active{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .trend-chart{width:100%;height:90px;position:relative;}
 
-    .stat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-    }
+  /* GP CHART */
+  .gp-list{display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto;padding-right:4px;}
+  .gp-list::-webkit-scrollbar{width:3px;}
+  .gp-list::-webkit-scrollbar-track{background:transparent;}
+  .gp-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .gp-item{display:flex;flex-direction:column;gap:5px;}
+  .gp-item-top{display:flex;justify-content:space-between;align-items:center;}
+  .gp-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+  .gp-count{font-size:11px;font-weight:600;color:#fca5a5;}
+  .gp-count.ok{color:#6ee7b7;}
+  .gp-bar-bg{height:4px;background:var(--border2);border-radius:2px;}
+  .gp-bar{height:4px;background:linear-gradient(90deg,var(--danger),#f87171);border-radius:2px;transition:width 0.8s ease;}
+  .gp-bar.ok{background:linear-gradient(90deg,var(--accent),#6ee7b7);}
 
-    .stat-num {
-      font-size: 28px;
-      font-weight: 700;
-      color: #00e5a0;
-      margin-bottom: 4px;
-    }
+  /* TOP PROJETOS SCROLL */
+  .top5-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:4px;}
+  .top5-list::-webkit-scrollbar{width:3px;}
+  .top5-list::-webkit-scrollbar-track{background:transparent;}
+  .top5-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .top5-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
+  .top5-rank{font-size:11px;font-weight:700;color:var(--muted);width:16px;text-align:center;flex-shrink:0;}
+  .top5-nome{font-size:12px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .top5-dias{font-size:11px;font-weight:600;color:#fca5a5;white-space:nowrap;}
 
-    .stat-label {
-      font-size: 12px;
-      color: #6b8299;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
+  /* TOOLBAR */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+  .filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .filter-tab{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted2);font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .filter-tab:hover{border-color:var(--accent);color:var(--accent);}
+  .filter-tab.active{background:rgba(0,181,174,0.1);border-color:var(--accent);color:var(--accent);}
+  .filter-tab.active-red{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:#fca5a5;}
+  .filter-tab.active-yellow{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.4);color:#fcd34d;}
+  .filter-tab.active-green{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.4);color:#6ee7b7;}
+  .badge-pill{padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);}
+  .search-box{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border2);min-width:240px;}
+  .search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;width:100%;}
+  .search-box input::placeholder{color:var(--muted);}
 
-    .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #f0f4ff;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
+  /* TABLE */
+  .projetos-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .table-header{display:grid;grid-template-columns:2fr 1fr 80px;padding:12px 24px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
 
-    .section-title.danger { color: #ef4444; }
+  /* ROW */
+  .projeto-row{border-bottom:1px solid var(--border);transition:background 0.12s,border-left 0.12s;border-left:3px solid transparent;}
+  .projeto-row:last-child{border-bottom:none;}
+  .projeto-row:nth-child(even){background:rgba(255,255,255,0.014);}
+  .projeto-row.open-row{background:rgba(0,181,174,0.04)!important;border-left-color:var(--accent);}
+  .projeto-main{display:grid;grid-template-columns:2fr 1fr 80px;align-items:center;padding:15px 24px;cursor:pointer;gap:16px;transition:background 0.12s;}
+  .projeto-main:hover{background:rgba(0,181,174,0.03);}
+  .projeto-nome{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;min-width:0;}
+  .projeto-nome span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .projeto-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .pbadge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
+  .pbadge-red{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
+  .pbadge-yellow{background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.2);}
+  .pbadge-green{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2);}
+  .row-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end;}
+  .btn-row{width:28px;height:28px;border-radius:6px;background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+  .btn-row:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-row.edit:hover{border-color:#60a5fa;color:#60a5fa;}
+  .btn-row.expand.open{transform:rotate(180deg);border-color:var(--accent);color:var(--accent);}
 
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
-    }
+  /* DETALHE */
+  .projeto-detalhe{display:none;padding:0 24px 20px 24px;border-top:1px solid var(--border);}
+  .projeto-detalhe.open{display:block;animation:slideDown 0.2s ease both;}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+  .detalhe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;padding:18px 0 16px;}
+  .detalhe-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+  .detalhe-val{font-size:13px;color:var(--text);font-weight:500;}
+  .detalhe-val.alert{color:#fca5a5;}.detalhe-val.warn{color:#fcd34d;}.detalhe-val.ok{color:#6ee7b7;}.detalhe-val.muted{color:var(--muted2);}
+  .detalhe-actions{display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border);}
+  .btn-excluir-full{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .btn-excluir-full:hover{background:rgba(239,68,68,0.18);}
 
-    .project-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      padding: 16px;
-      transition: all 0.2s ease;
-    }
+  /* EMPTY / LOADING */
+  .empty-state{padding:60px 24px;text-align:center;}
+  .empty-state .icon{font-size:36px;margin-bottom:12px;opacity:0.4;}
+  .empty-state p{color:var(--muted2);font-size:14px;}
+  .loading{padding:52px 24px;text-align:center;color:var(--muted2);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-    .project-card:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(0,229,160,0.3);
-    }
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:500px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,0.5);animation:modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;}
+  @keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .modal-head{padding:20px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .modal-head h3{font-size:16px;font-weight:600;}
+  .modal-close{width:28px;height:28px;border-radius:6px;background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+  .modal-close:hover{border-color:var(--danger);color:#fca5a5;}
+  .modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:14px;}
+  .form-group{display:flex;flex-direction:column;gap:6px;}
+  .form-label{font-size:11px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:0.07em;}
+  .form-input{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,181,174,0.12);}
+  .form-input::placeholder{color:var(--muted);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-check{display:flex;align-items:center;gap:8px;}
+  .form-check input[type="checkbox"]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;}
+  .form-check label{font-size:13px;color:var(--muted2);cursor:pointer;}
+  .modal-foot{padding:16px 24px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
 
-    .project-card.lpa {
-      border-color: rgba(239,68,68,0.3);
-      background: rgba(239,68,68,0.05);
-    }
+  /* CONFIRM */
+  .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;}
+  .confirm-overlay.open{display:flex;}
+  .confirm-box{background:var(--surface);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:380px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,0.5);animation:modalIn 0.2s cubic-bezier(0.34,1.56,0.64,1) both;}
+  .confirm-head{padding:20px 24px 12px;}
+  .confirm-head h4{font-size:15px;font-weight:600;color:var(--text);}
+  .confirm-head p{font-size:13px;color:var(--muted2);margin-top:6px;line-height:1.5;}
+  .confirm-foot{padding:14px 24px 20px;display:flex;gap:8px;justify-content:flex-end;}
+  .btn-confirm-cancel{display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--muted2);border:1px solid var(--border2);font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .btn-confirm-cancel:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-confirm-ok{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);font-family:'Inter',sans-serif;transition:all 0.15s;}
+  .btn-confirm-ok:hover{background:rgba(239,68,68,0.25);}
 
-    .project-card.lpa:hover {
-      border-color: rgba(239,68,68,0.6);
-      background: rgba(239,68,68,0.1);
-    }
+  /* TOAST */
+  #toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;background:var(--surface2);border:1px solid var(--border2);box-shadow:0 8px 30px rgba(0,0,0,0.4);transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:999;pointer-events:none;}
+  #toast.show{transform:translateY(0);opacity:1;}
+  #toast.success{border-color:rgba(16,185,129,0.4);color:#6ee7b7;}
+  #toast.error{border-color:rgba(239,68,68,0.4);color:#fca5a5;}
 
-    .project-name {
-      font-weight: 600;
-      font-size: 14px;
-      color: #f0f4ff;
-      margin-bottom: 8px;
-      word-break: break-word;
-    }
+  /* QUASE VENCENDO */
+  .pbadge-orange{background:rgba(249,115,22,0.12);color:#fdba74;border:1px solid rgba(249,115,22,0.25);}
 
-    .project-meta {
-      font-size: 12px;
-      color: #6b8299;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
+  /* RAIO-X MODAL */
+  .raio-x-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;}
+  .raio-x-overlay.open{display:flex;}
+  .raio-x-box{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:520px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,0.5);animation:modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;}
+  .raio-x-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .raio-x-head h3{font-size:15px;font-weight:600;}
+  .raio-x-body{padding:20px 24px;}
+  .raio-x-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .raio-x-item{padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
+  .raio-x-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+  .raio-x-val{font-size:13px;font-weight:500;color:var(--text);word-break:break-word;}
+  .raio-x-val.ok{color:#6ee7b7;}.raio-x-val.alert{color:#fca5a5;}.raio-x-val.warn{color:#fcd34d;}.raio-x-val.muted{color:var(--muted2);}
+  .raio-x-foot{padding:14px 24px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
 
-    .project-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      background: rgba(0,229,160,0.15);
-      border: 1px solid rgba(0,229,160,0.3);
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #6ee7b7;
-    }
-
-    .project-badge.lpa {
-      background: rgba(239,68,68,0.15);
-      border-color: rgba(239,68,68,0.3);
-      color: #f87171;
-    }
-
-    .project-badge.info {
-      background: rgba(59,130,246,0.15);
-      border-color: rgba(59,130,246,0.3);
-      color: #60a5fa;
-    }
-
-    .project-info {
-      font-size: 12px;
-      color: #3d4f63;
-      line-height: 1.6;
-    }
-
-    .project-info strong { color: #6b8299; }
-
-    .empty {
-      text-align: center;
-      padding: 48px 24px;
-      color: #6b8299;
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 14px;
-      color: #6b8299;
-    }
-
-    .filter-buttons {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 6px;
-      color: #6b8299;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .filter-btn:hover, .filter-btn.active {
-      background: rgba(0,229,160,0.15);
-      border-color: rgba(0,229,160,0.3);
-      color: #6ee7b7;
-    }
-
-    .last-sync {
-      font-size: 11px;
-      color: #3d4f63;
-      margin-top: 8px;
-      text-align: right;
-    }
-  </style>
+  @media(max-width:900px){
+    .insights-grid{grid-template-columns:1fr;}
+    .stats-strip{grid-template-columns:repeat(2,1fr);}
+    .table-header{display:none;}
+    .projeto-main{grid-template-columns:1fr 72px;}
+    .projeto-badges{display:none;}
+    .wrap{padding:0 16px;}
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>📊 Monitor de Projetos</h1>
-      <div class="header-meta">
-        <span>Grupo DB · PMO Corporativo</span>
-        <span id="syncTime"></span>
+<div class="wrap">
+  <header>
+    <div class="header-inner">
+      <div class="logo-area">
+        <img style="width:36px;height:36px;object-fit:contain;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAEUElEQVR4nO3d0W7bSBBFwfFi//+XlYdFsIITXVO2RHb3VD0FQawMmT4aUWDAj9vttoC/++fqBUBlAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBD8e/UCLnJ78Psfp66C8nYK5FEUj/6MWNgikCNhpJ8TysamX4N8N45XvwZNTQ3ktl472CLZ1MRA3jXMItnQtEDePcQi2cykQM4aXpFsZEogZw+tSDYxJZAriGQDEwK5clBFMlz3QCoMaIU18CbdA4G36hxIpXfuSmvhhboGUnEgK66JH+oaSFUiGaZjIIaQ03QMpDoBDyKQ9xDJEN0CMXicqlsgnYh5gE6BdBy4jmvmTqdAuhJJYwI5h0iaEggEAjmPXaShLoFMGa4px7GNLoFMIpJGBHINkTQhEAgEch27SAMCuZZIihPI9URSmEBqEElRAqlDJAUJpBaRFLPDE6a6ua2eT7Ua+dxHgdTUIZKju13rR9kJpK6KkfzkI2DLUFyD1FblmuSVj7SrckyHCKS+qwbqtl4bxufXbkEgPXhA0EUE0scZQ/uuHePR31WeQHp55xN8Wwzs2boE0uqbjzfzDPgTdQmEP/10sO0aBwikt+8OuDAOEkh/z+4E4nhCp0Bch2RfDb6PVN/QKRC+9iiAimG0eMNzL9Y89/c8VQyjlW47SIt3nSIqx9Hm37FbIBz3sWoOYsU1PdQxkFYn+CIfn35d5ZxVWcdhHQMhezSEV4fSLo61BDLNkSG8IpSWcazVN5C2J/yNnj0nZ4Ry9a71Y52/5vU15v9+MoT3P/uq89k6inudA+E/rxzGz691NJgxQXzWPZDdd5EzPiJtres1CIb3FBMC2XFQdjzmS0wIZK29BmanY73clEB2IY6TTQpk+vBMP76SJgWy1twhmnpc5U0LZK15wzTteFqZGMhaM4aq/W0aE0wNZC3DxQtMDmStnpHYOQqZHshavYat01q3sEMga/UYvA5r3M4ugaxVewArr21r3e/mfdbvQaxyB7AwittpB7lXYTArrIEv7LaD3LtqNxFGI7vuIPfOGlhf3za08w5y7x3/L/vR69OIQP70qlhEMYBAsmdiEcRAAjlOABtykQ6BQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAIBAKBQCAQCAS/ACIoap+5AdaTAAAAAElFTkSuQmCC" alt="Grupo DB">
+        <!-- OLD_LOGO_PLACEHOLDER-->
+        <div class="logo-text">
+          <h1>Monitoramento de Atualizações de Projetos</h1>
+          <p>Grupo DB · PMO</p>
+        </div>
       </div>
-    </header>
+      <div class="header-right">
+        <div class="live-badge"><div class="dot"></div> Monitoramento ativo</div>
+        <button class="btn btn-ghost" onclick="carregarDados()">🔄 Atualizar</button>
+        <button class="btn btn-primary" onclick="abrirModal()">＋ Cadastrar Projeto</button>
+      </div>
+    </div>
+  </header>
 
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-num" id="totalProjectos">0</div>
-        <div class="stat-label">Projetos Ativos</div>
+  <div class="stats-strip">
+    <div class="stat-card si-teal"><div><div class="stat-val teal" id="stat-total">—</div><div class="stat-label">Projetos monitorados</div></div></div>
+    <div class="stat-card si-red"><div><div class="stat-val red" id="stat-status">—</div><div class="stat-label">Status atrasado (+7 dias)</div></div></div>
+    <div class="stat-card si-yellow"><div><div class="stat-val yellow" id="stat-atencao">—</div><div class="stat-label">Sem pontos de atenção</div></div></div>
+    <div class="stat-card si-green"><div><div class="stat-val green" id="stat-ok">—</div><div class="stat-label">Projetos em dia</div></div></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="insights-grid">
+    <!-- GAUGE -->
+    <div class="insight-card">
+      <div class="insight-title-row">
+        <div class="insight-title" style="margin-bottom:0;">📊 Taxa de Conformidade</div>
+        <div class="toggle-btns">
+          <button class="toggle-btn active" id="btn-gauge" onclick="toggleGaugeView('gauge')">Atual</button>
+          <button class="toggle-btn" id="btn-trend" onclick="toggleGaugeView('trend')">Histórico</button>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num" id="totalLpa" style="color: #ef4444;">0</div>
-        <div class="stat-label">Aguardando Atualização</div>
+      <div class="gauge-view active" id="gauge-view">
+        <svg class="gauge-svg" viewBox="0 0 160 90" style="width:160px;height:90px;">
+          <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="#1e2d45" stroke-width="12" stroke-linecap="round"/>
+          <path id="gauge-arc" d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 188"/>
+        </svg>
+        <div class="gauge-val" id="gauge-pct" style="color:#6ee7b7;margin-top:-20px;">—%</div>
+        <div class="gauge-label">projetos em dia</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num" id="totalAtrasados" style="color: #f59e0b;">0</div>
-        <div class="stat-label">Atrasados</div>
+      <div class="trend-view" id="trend-view">
+        <svg id="trend-svg" viewBox="0 0 260 90" style="width:100%;height:90px;"></svg>
+        <div style="font-size:10px;color:var(--muted2);margin-top:4px;">Últimas sincronizações</div>
       </div>
     </div>
 
-    <!-- Filtros -->
-    <div class="filter-buttons">
-      <button class="filter-btn active" onclick="filtrarView('todos')">Todos</button>
-      <button class="filter-btn" onclick="filtrarView('lpa')">🚨 Em LPA</button>
-      <button class="filter-btn" onclick="filtrarView('atrasados')">⏰ Atrasados</button>
+    <!-- GP RANKING -->
+    <div class="insight-card">
+      <div class="insight-title">👤 Todos os GPs</div>
+      <div class="gp-list" id="gp-ranking">
+        <div style="color:var(--muted);font-size:12px;">Carregando...</div>
+      </div>
     </div>
 
-    <!-- Seção: Em LPA (Aguardando Atualização) -->
-    <div id="secaoLpa" style="display:none; margin-bottom: 40px;">
-      <h2 class="section-title danger">🚨 Aguardando Atualização (>7 dias)</h2>
-      <div class="projects-grid" id="gridLpa"></div>
-    </div>
-
-    <!-- Seção: Ativos -->
-    <div id="secaoAtivos">
-      <h2 class="section-title">✅ Projetos em Andamento</h2>
-      <div class="projects-grid" id="gridAtivos"></div>
-    </div>
-
-    <!-- Loading -->
-    <div id="loading" class="loading">Carregando dados...</div>
-
-    <!-- Empty state -->
-    <div id="empty" class="empty" style="display:none;">
-      <div class="empty-icon">📭</div>
-      <div>Nenhum projeto encontrado</div>
+    <!-- TODOS DESATUALIZADOS -->
+    <div class="insight-card">
+      <div class="insight-title">🔴 Projetos Desatualizados</div>
+      <div class="top5-list" id="top5-list">
+        <div style="color:var(--muted);font-size:12px;">Carregando...</div>
+      </div>
     </div>
   </div>
 
-  <script>
-    const WORKER_URL = 'https://pmo-mudancas.vitormanu-dl05.workers.dev'; // Ajuste para seu Worker
-    let allProjects = [];
-    let filterView = 'todos';
+  <div class="toolbar">
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filtrarTab(this,'todos')">Todos <span class="badge-pill" id="badge-todos">0</span></button>
+      <button class="filter-tab" onclick="filtrarTab(this,'status')">Status atrasado <span class="badge-pill" id="badge-status">0</span></button>
+      <button class="filter-tab" onclick="filtrarTab(this,'atencao')">Sem pontos de atenção <span class="badge-pill" id="badge-atencao">0</span></button>
+      <button class="filter-tab" onclick="filtrarTab(this,'ok')">Em dia <span class="badge-pill" id="badge-ok">0</span></button>
+    </div>
+    <div class="search-box">
+      <span style="color:var(--muted)">🔍</span>
+      <input type="text" placeholder="Buscar por projeto, GP ou ID..." id="busca" oninput="renderProjetos()">
+    </div>
+  </div>
 
-    async function loadData() {
+  <div class="projetos-section">
+    <div class="table-header"><div>Projeto</div><div>Status</div><div style="text-align:right">Ações</div></div>
+    <div id="proj-list"><div class="loading"><div class="spinner"></div>Buscando dados...</div></div>
+  </div>
+  <div style="height:48px;"></div>
+</div>
+
+<!-- MODAL CADASTRO/EDIÇÃO -->
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModalOverlay(event)">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title">Cadastrar Projeto</h3><button class="modal-close" onclick="fecharModal()">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="f-editid">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">ID no Artia</label><input class="form-input" id="f-id" type="text" placeholder="Ex: 12345"></div>
+        <div class="form-group"><label class="form-label">Nome do GP</label><input class="form-input" id="f-gp" type="text" placeholder="Nome do gerente"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Nome do Projeto</label><input class="form-input" id="f-nome" type="text" placeholder="Nome do projeto estratégico"></div>
+      <div class="form-group"><label class="form-label">Última atualização de status</label><input class="form-input" id="f-data" type="date"></div>
+      <div class="form-check"><input type="checkbox" id="f-atencao"><label for="f-atencao">Pontos de atenção já preenchidos</label></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarProjeto()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RAIO-X MODAL -->
+<div class="raio-x-overlay" id="raio-x-overlay" onclick="fecharRaioX(event)">
+  <div class="raio-x-box">
+    <div class="raio-x-head">
+      <h3 id="raio-x-titulo">📋 Detalhes do Projeto</h3>
+      <button class="modal-close" onclick="document.getElementById('raio-x-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="raio-x-body">
+      <div class="raio-x-grid" id="raio-x-grid"></div>
+    </div>
+    <div class="raio-x-foot">
+      <button class="btn btn-ghost" onclick="document.getElementById('raio-x-overlay').classList.remove('open')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-head"><h4 id="confirm-title">Excluir projeto?</h4><p id="confirm-msg">Essa ação não pode ser desfeita.</p></div>
+    <div class="confirm-foot">
+      <button class="btn-confirm-cancel" onclick="fecharConfirm()">Cancelar</button>
+      <button class="btn-confirm-ok" id="confirm-ok-btn">🗑️ Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const WORKER = 'https://pmo-monitor.vitormanu-dl05.workers.dev';
+  let todosAlertas=[], todosOk=[], todosProjetos=[], alertasMap={};
+  let filtroAtivo='todos', confirmCallback=null, projetosDetalhes={}, gpFiltro=null;
+
+  async function carregarDados() {
+    document.getElementById('proj-list').innerHTML=`<div class="loading"><div class="spinner"></div>Buscando dados...</div>`;
+    try {
+      const [ar,pr]=await Promise.all([fetch(`${WORKER}/alertas`),fetch(`${WORKER}/projetos`)]);
+      todosAlertas=await ar.json();
+      const projIds=await pr.json();
+      alertasMap={};
+      todosAlertas.forEach(a=>alertasMap[a.id]=a);
+      const idsComAlerta=new Set(todosAlertas.map(a=>a.id));
+      todosOk=projIds.filter(p=>!idsComAlerta.has(p.id));
+      todosProjetos=projIds;
+
+      // Busca detalhes completos (inclui GP de projetos em dia)
+      projetosDetalhes={};
+      await Promise.all(projIds.map(async p => {
+        try {
+          const r=await fetch(`${WORKER}/debug/${p.id}`);
+          const d=await r.json();
+          projetosDetalhes[p.id]=d;
+        } catch(e) {}
+      }));
+
+      // ✅ FILTRO: Manter apenas projetos "Em Andamento"
+      const projetosAtivos=projIds.filter(p=>{
+        const situacao=(projetosDetalhes[p.id]?.situacao||'').toLowerCase().trim();
+        return situacao==='em andamento';
+      });
+      
+      // Refiltra alertas e projetos OK para manter apenas os ativos
+      const idsAtivos=new Set(projetosAtivos.map(p=>p.id));
+      todosAlertas=todosAlertas.filter(a=>idsAtivos.has(a.id));
+      todosOk=todosOk.filter(p=>idsAtivos.has(p.id));
+      todosProjetos=projetosAtivos;
+
+      atualizarStats();
+      renderInsights();
+      renderProjetos();
+    } catch(e) {
+      document.getElementById('proj-list').innerHTML=`<div class="empty-state"><div class="icon">❌</div><p>Erro ao conectar com o Worker</p></div>`;
+    }
+  }
+
+  function atualizarStats() {
+    const total=todosProjetos.length;
+    const comStatus=todosAlertas.filter(a=>a.problemas.some(p=>p.tipo==='status')).length;
+    const comAtencao=todosAlertas.filter(a=>a.problemas.some(p=>p.tipo==='risco')).length;
+    const ok=todosOk.length;
+    document.getElementById('stat-total').textContent=total;
+    document.getElementById('stat-status').textContent=comStatus;
+    document.getElementById('stat-atencao').textContent=comAtencao;
+    document.getElementById('stat-ok').textContent=ok;
+    document.getElementById('badge-todos').textContent=total;
+    document.getElementById('badge-status').textContent=comStatus;
+    document.getElementById('badge-atencao').textContent=comAtencao;
+    document.getElementById('badge-ok').textContent=ok;
+  }
+
+  // Histórico do gauge (armazena últimas leituras em sessão)
+  const gaugeHistorico=[];
+
+  function toggleGaugeView(view) {
+    document.getElementById('gauge-view').classList.toggle('active', view==='gauge');
+    document.getElementById('trend-view').classList.toggle('active', view==='trend');
+    document.getElementById('btn-gauge').classList.toggle('active', view==='gauge');
+    document.getElementById('btn-trend').classList.toggle('active', view==='trend');
+    if(view==='trend') renderTrend();
+  }
+
+  function renderTrend() {
+    const svg=document.getElementById('trend-svg');
+    if(gaugeHistorico.length<2){
+      svg.innerHTML=`<text x="130" y="50" text-anchor="middle" fill="#3d4f63" font-size="11" font-family="Inter">Atualize algumas vezes para ver o histórico</text>`;
+      return;
+    }
+    const W=260,H=80,pad=16;
+    const vals=gaugeHistorico.map(h=>h.pct);
+    const min=Math.max(0,Math.min(...vals)-10);
+    const max=Math.min(100,Math.max(...vals)+10);
+    const xStep=(W-pad*2)/(vals.length-1);
+    const yScale=(v)=>H-pad-((v-min)/(max-min||1))*(H-pad*2);
+    const pts=vals.map((v,i)=>`${pad+i*xStep},${yScale(v)}`).join(' ');
+    const color=vals[vals.length-1]>=80?'#10b981':vals[vals.length-1]>=50?'#f59e0b':'#ef4444';
+    svg.innerHTML=`
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${vals.map((v,i)=>`
+        <circle cx="${pad+i*xStep}" cy="${yScale(v)}" r="3" fill="${color}"/>
+        <text x="${pad+i*xStep}" y="${yScale(v)-7}" text-anchor="middle" fill="${color}" font-size="9" font-family="Inter">${v}%</text>
+      `).join('')}
+    `;
+  }
+
+  function renderInsights() {
+    const total=todosProjetos.length;
+    const ok=todosOk.length;
+    const pct=total>0?Math.round((ok/total)*100):0;
+
+    // Gauge
+    const circumference=188;
+    const arc=document.getElementById('gauge-arc');
+    const fill=(pct/100)*circumference;
+    arc.setAttribute('stroke-dasharray',`${fill} ${circumference}`);
+    const color=pct>=80?'#10b981':pct>=50?'#f59e0b':'#ef4444';
+    arc.setAttribute('stroke',color);
+    const pctEl=document.getElementById('gauge-pct');
+    pctEl.textContent=`${pct}%`;
+    pctEl.style.color=color==='#10b981'?'#6ee7b7':color==='#f59e0b'?'#fcd34d':'#fca5a5';
+
+    // Salva no histórico (evita duplicar o mesmo valor consecutivo)
+    const ultimo=gaugeHistorico[gaugeHistorico.length-1];
+    if(!ultimo||ultimo.pct!==pct) gaugeHistorico.push({pct, t:new Date()});
+    if(gaugeHistorico.length>12) gaugeHistorico.shift();
+
+    // GP ranking — TODOS os GPs, com e sem pendências
+    const gpMap={};
+    todosAlertas.forEach(a=>{
+      const gp=a.gp||'Sem GP';
+      if(!gpMap[gp]) gpMap[gp]=0;
+      gpMap[gp]++;
+    });
+    // Adiciona GPs sem pendência (dos projetos em dia)
+    todosProjetos.forEach(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=det.gp||alertasMap[p.id]?.gp||'Sem GP';
+      if(!(gp in gpMap)) gpMap[gp]=0;
+    });
+    const gpSorted=Object.entries(gpMap).sort((a,b)=>b[1]-a[1]);
+    const maxGp=gpSorted[0]?.[1]||1;
+    document.getElementById('gp-ranking').innerHTML=gpSorted.length===0
+      ?`<div style="color:var(--muted);font-size:12px;">Nenhum GP cadastrado</div>`
+      :gpSorted.map(([gp,count])=>{
+        const semPendencia=count===0;
+        return `
+        <div class="gp-item" style="cursor:pointer;" onclick="filtrarPorGP('${gp.replace(/'/g,"\\'")}')" title="Ver projetos de ${gp.replace(/'/g,"\\'")}">
+          <div class="gp-item-top">
+            <span class="gp-name" style="color:${semPendencia?'var(--accent)':'#fca5a5'}">${gp}</span>
+            <span class="gp-count ${semPendencia?'ok':''}">${semPendencia?'✓ Em dia':`${count} pendência${count>1?'s':''}`}</span>
+          </div>
+          <div class="gp-bar-bg"><div class="gp-bar ${semPendencia?'ok':''}" style="width:${semPendencia?'100':(count/maxGp)*100}%;opacity:${semPendencia?0.4:1};"></div></div>
+        </div>`;
+      }).join('');
+
+    // Todos os projetos com status atrasado, scrollável
+    const comDias=todosAlertas
+      .filter(a=>a.problemas.some(p=>p.tipo==='status'))
+      .map(a=>{
+        const prob=a.problemas.find(p=>p.tipo==='status');
+        const match=prob?.mensagem?.match(/(\d+) dias/);
+        return {...a, dias: match?parseInt(match[1]):0};
+      })
+      .sort((a,b)=>b.dias-a.dias);
+
+    document.getElementById('top5-list').innerHTML=comDias.length===0
+      ?`<div style="color:var(--muted);font-size:12px;">Nenhum status atrasado 🎉</div>`
+      :comDias.map((a,i)=>`
+        <div class="top5-item">
+          <span class="top5-rank">${i+1}</span>
+          <span class="top5-nome">${a.nome||a.id}</span>
+          <span class="top5-dias">${a.dias}d</span>
+        </div>`).join('');
+  }
+
+  function renderProjetos() {
+    gpFiltro=null;
+    const el=document.getElementById('proj-list');
+    const busca=document.getElementById('busca').value.toLowerCase();
+    let lista=todosProjetos.map(p=>({...p,alerta:alertasMap[p.id]}));
+    if(filtroAtivo==='status') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='status'));
+    else if(filtroAtivo==='atencao') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='risco'));
+    else if(filtroAtivo==='ok') lista=lista.filter(p=>!p.alerta);
+    if(busca) lista=lista.filter(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=(det.gp||p.alerta?.gp||'').toLowerCase();
+      const nome=(p.nome||'').toLowerCase();
+      const id=(p.id||'').toLowerCase();
+      return nome.includes(busca)||gp.includes(busca)||id.includes(busca);
+    });
+    if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p></div>`;return;}
+
+    renderListaProjetos(lista, el);
+  }
+
+  function renderListaProjetos(lista, el) {
+    el.innerHTML=lista.map(p=>{
+      const a=p.alerta;
+      const det=projetosDetalhes[p.id]||{};
+      const temStatus=a?.problemas.find(pr=>pr.tipo==='status');
+      const temAtencao=a?.problemas.find(pr=>pr.tipo==='risco');
+      const emDia=!a;
+
+      // Calcular dias desde última atualização
+      const ultData=det.ultimasInfo_atualizado;
+      let diasStr='Nunca atualizado';
+      let diasNum=null;
+      if(ultData){
+        const dias=Math.floor((new Date()-new Date(ultData))/(1000*60*60*24));
+        diasNum=dias;
+        const dtFmt=new Date(ultData).toLocaleDateString('pt-BR');
+        diasStr=`Atualizado em ${dtFmt} · ${dias} dia${dias!==1?'s':''} atrás`;
+      }
+      const quaseVencendo=emDia && diasNum!==null && diasNum>=5 && diasNum<=7;
+
+      const dotColor=temStatus?'var(--danger)':quaseVencendo?'#f97316':temAtencao?'var(--warning)':'var(--success)';
+      const dotShadow=temStatus?'rgba(239,68,68,0.5)':quaseVencendo?'rgba(249,115,22,0.5)':temAtencao?'rgba(245,158,11,0.5)':'rgba(16,185,129,0.5)';
+
+      const badges=emDia
+        ?`<span class="pbadge ${quaseVencendo?'pbadge-orange':'pbadge-green'}">${quaseVencendo?'⚡ Vence em breve':'✓ Em dia'}</span>`
+        :`${temStatus?`<span class="pbadge pbadge-red">⏰ Status atrasado</span>`:''}${temAtencao?`<span class="pbadge pbadge-yellow">⚠️ Sem pontos de atenção</span>`:''}`;
+
+      const nomeExibido=det.nome||p.nome||p.id;
+      const gp=det.gp||a?.gp||'—';
+      const statusReportVal=temStatus?temStatus.mensagem:`Em dia · ${diasStr}`;
+      const statusReportClass=temStatus?'alert':quaseVencendo?'warn':'ok';
+
+      return `<div class="projeto-row"><div class="projeto-main" onclick="toggleDetalhe('${p.id}')">
+        <div class="projeto-nome"><div class="status-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotShadow};flex-shrink:0;"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nomeExibido}</span></div>
+        <div class="projeto-badges">${badges}</div>
+        <div class="row-actions" onclick="event.stopPropagation()">
+          <button class="btn-row edit" title="Editar" onclick="editarProjeto('${p.id}')">✎</button>
+          <button class="btn-row expand" id="expand-${p.id}" onclick="toggleDetalhe('${p.id}')">▾</button>
+        </div>
+      </div>
+      <div class="projeto-detalhe" id="detalhe-${p.id}">
+        <div class="detalhe-grid">
+          <div><div class="detalhe-label">Gerente de Projeto</div><div class="detalhe-val">${gp}</div></div>
+          <div><div class="detalhe-label">Status do Report</div><div class="detalhe-val ${statusReportClass}" style="font-size:12px">${statusReportVal}</div></div>
+          <div><div class="detalhe-label">Pontos de Atenção</div><div class="detalhe-val ${temAtencao?'warn':'ok'}">${temAtencao?'Não preenchido':'Preenchido'}</div></div>
+          <div><div class="detalhe-label">ID no Artia</div><div class="detalhe-val muted">${p.id}</div></div>
+        </div>
+        <div class="detalhe-actions">
+          <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;margin-right:8px;" onclick="abrirRaioX('${p.id}')">📋 Ver detalhes</button>
+          <button class="btn-excluir-full" onclick="excluirProjeto('${p.id}')">🗑️ Excluir projeto</button>
+        </div>
+      </div></div>`;
+    }).join('');
+  }
+
+  function toggleDetalhe(id) {
+    const detalhe=document.getElementById(`detalhe-${id}`);
+    const btn=document.getElementById(`expand-${id}`);
+    const row=detalhe.closest('.projeto-row');
+    const isOpen=detalhe.classList.contains('open');
+    document.querySelectorAll('.projeto-detalhe.open').forEach(d=>{
+      const rid=d.id.replace('detalhe-','');
+      d.classList.remove('open');
+      document.getElementById(`expand-${rid}`)?.classList.remove('open');
+      d.closest('.projeto-row')?.classList.remove('open-row');
+    });
+    if(!isOpen){detalhe.classList.add('open');btn.classList.add('open');row.classList.add('open-row');}
+  }
+
+  function filtrarPorGP(gp) {
+    gpFiltro = gpFiltro === gp ? null : gp;
+    // Scroll to list
+    document.querySelector('.projetos-section').scrollIntoView({behavior:'smooth'});
+    // Update busca field to show filter
+    const busca = document.getElementById('busca');
+    busca.value = gpFiltro ? `GP: ${gp}` : '';
+    // Reset to todos tab
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active','active-red','active-yellow','active-green'));
+    document.querySelector('.filter-tab').classList.add('active');
+    filtroAtivo='todos';
+    renderProjetosComGP();
+  }
+
+  function renderProjetosComGP() {
+    const el=document.getElementById('proj-list');
+    let lista=todosProjetos.map(p=>({...p,alerta:alertasMap[p.id]}));
+    if(filtroAtivo==='status') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='status'));
+    else if(filtroAtivo==='atencao') lista=lista.filter(p=>p.alerta?.problemas.some(pr=>pr.tipo==='risco'));
+    else if(filtroAtivo==='ok') lista=lista.filter(p=>!p.alerta);
+
+    // Filtro por GP
+    if(gpFiltro) {
+      lista=lista.filter(p=>{
+        const gp=projetosDetalhes[p.id]?.gp||p.alerta?.gp||'';
+        return gp===gpFiltro;
+      });
+    }
+
+    const busca=document.getElementById('busca').value.toLowerCase();
+    if(busca && !busca.startsWith('gp: ')) lista=lista.filter(p=>{
+      const det=projetosDetalhes[p.id]||{};
+      const gp=(det.gp||p.alerta?.gp||'').toLowerCase();
+      const nome=(p.nome||'').toLowerCase();
+      const id=(p.id||'').toLowerCase();
+      return nome.includes(busca)||gp.includes(busca)||id.includes(busca);
+    });
+
+    if(lista.length===0){el.innerHTML=`<div class="empty-state"><div class="icon">📁</div><p>Nenhum projeto encontrado</p>${gpFiltro?`<small>Filtrado por GP: ${gpFiltro} — <a href="#" onclick="filtrarPorGP('');return false;" style="color:var(--accent)">Limpar filtro</a></small>`:''}</div>`;return;}
+    renderListaProjetos(lista, el);
+  }
+
+  function filtrarTab(el,filtro) {
+    filtroAtivo=filtro;
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active','active-red','active-yellow','active-green'));
+    if(filtro==='status') el.classList.add('active-red');
+    else if(filtro==='atencao') el.classList.add('active-yellow');
+    else if(filtro==='ok') el.classList.add('active-green');
+    else el.classList.add('active');
+    renderProjetos();
+  }
+
+  // MODAL CADASTRO
+  function abrirModal() {
+    document.getElementById('modal-title').textContent='Cadastrar Projeto';
+    document.getElementById('f-editid').value='';
+    document.getElementById('f-id').value='';
+    document.getElementById('f-id').disabled=false;
+    document.getElementById('f-nome').value='';
+    document.getElementById('f-gp').value='';
+    document.getElementById('f-data').value=new Date().toISOString().split('T')[0];
+    document.getElementById('f-atencao').checked=false;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function editarProjeto(id) {
+    const alerta=alertasMap[id];
+    const proj=todosProjetos.find(p=>p.id===id);
+    const det=projetosDetalhes[id]||{};
+    const nomeReal=det?.nome||proj?.nome||alerta?.nome||id;
+    const gpReal=det?.gp||alerta?.gp||'';
+    document.getElementById('modal-title').textContent='Editar Projeto';
+    document.getElementById('f-editid').value=id;
+    document.getElementById('f-id').value=id;
+    document.getElementById('f-id').disabled=true;
+    document.getElementById('f-nome').value=nomeReal;
+    document.getElementById('f-gp').value=gpReal;
+    document.getElementById('f-data').value=det?.ultimasInfo_atualizado
+      ? new Date(det.ultimasInfo_atualizado).toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0];
+    document.getElementById('f-atencao').checked=alerta?!alerta.problemas.some(p=>p.tipo==='risco'):true;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function fecharModal(){document.getElementById('modal-overlay').classList.remove('open');}
+  function fecharModalOverlay(e){if(e.target.id==='modal-overlay') fecharModal();}
+
+  async function salvarProjeto() {
+    const editId=document.getElementById('f-editid').value.trim();
+    const id=editId||document.getElementById('f-id').value.trim();
+    const nome=document.getElementById('f-nome').value.trim();
+    const gp=document.getElementById('f-gp').value.trim();
+    const data=document.getElementById('f-data').value;
+    const atencao=document.getElementById('f-atencao').checked;
+    if(!id||!nome||!gp){toast('Preencha ID, nome e GP','error');return;}
+    try {
+      const res=await fetch(`${WORKER}/projetos`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id,nome,gp,ultimasInfo_atualizado:data?dataLocalParaISO(data):null,restricoes_preenchido:atencao})});
+      if(res.ok){toast('Projeto salvo!','success');fecharModal();setTimeout(carregarDados,500);}
+      else toast('Erro ao salvar','error');
+    } catch(e){toast('Erro de conexão','error');}
+  }
+
+  // CONFIRM
+  function abrirConfirm(titulo,msg,callback){
+    document.getElementById('confirm-title').textContent=titulo;
+    document.getElementById('confirm-msg').textContent=msg;
+    confirmCallback=callback;
+    document.getElementById('confirm-overlay').classList.add('open');
+    document.getElementById('confirm-ok-btn').onclick=()=>{fecharConfirm();callback();};
+  }
+  function fecharConfirm(){document.getElementById('confirm-overlay').classList.remove('open');confirmCallback=null;}
+
+  async function excluirProjeto(id) {
+    const proj=todosProjetos.find(p=>p.id===id);
+    const det=projetosDetalhes[id]||{};
+    const nome=proj?.nome||det?.nome||alertasMap[id]?.nome||id;
+    abrirConfirm(`Excluir "${nome}"?`,'Essa ação não pode ser desfeita.',async()=>{
       try {
-        const loading = document.getElementById('loading');
-        loading.style.display = 'block';
+        const res=await fetch(`${WORKER}/projetos/${id}`,{method:'DELETE'});
+        if(res.ok){toast(`"${nome}" excluído`,'success');setTimeout(carregarDados,500);}
+        else toast('Erro ao excluir','error');
+      } catch(e){toast('Erro de conexão','error');}
+    });
+  }
 
-        // Tenta carregar do novo endpoint /monitor (filtrado)
-        let response = await fetch(`${WORKER_URL}/monitor`);
-        if (!response.ok) {
-          // Fallback para /projetos-ativos se /monitor não existir
-          response = await fetch(`${WORKER_URL}/projetos-ativos`);
-        }
+  function toast(msg,tipo='success'){
+    const el=document.getElementById('toast');
+    el.textContent=tipo==='success'?'✅ '+msg:'❌ '+msg;
+    el.className='show '+tipo;
+    setTimeout(()=>{el.className='';},3000);
+  }
 
-        allProjects = await response.json();
-        loading.style.display = 'none';
+  function abrirRaioX(id) {
+    const proj=todosProjetos.find(p=>p.id===id);
+    const det=projetosDetalhes[id]||{};
+    const a=alertasMap[id];
+    const nome=proj?.nome||det?.nome||a?.nome||id;
+    document.getElementById('raio-x-titulo').textContent=`📋 ${nome}`;
 
-        updateStats();
-        render();
-        updateSyncTime();
-
-        // Auto-refresh a cada 5 minutos
-        setTimeout(loadData, 5 * 60 * 1000);
-      } catch (err) {
-        console.error('Erro ao carregar dados:', err);
-        document.getElementById('loading').innerHTML = `
-          ⚠️ Erro ao carregar dados.<br>
-          <small style="color:#6b8299;">Verifique a URL do Worker</small>
-        `;
-      }
+    const ultData=det.ultimasInfo_atualizado;
+    let ultDataStr='Nunca atualizado';
+    let diasStr='—';
+    if(ultData){
+      const dias=Math.floor((new Date()-new Date(ultData))/(1000*60*60*24));
+      ultDataStr=new Date(ultData).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+      diasStr=`${dias} dia${dias!==1?'s':''} atrás`;
     }
 
-    function updateStats() {
-      const total = allProjects.length;
-      const emLpa = allProjects.filter(p => p.aguarda_atualizacao).length;
-      const atrasados = allProjects.filter(p => p.status_prazo === 'atrasado').length;
+    const syncData=det.ultima_atualizacao;
+    const syncStr=syncData?new Date(syncData).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
 
-      document.getElementById('totalProjectos').textContent = total;
-      document.getElementById('totalLpa').textContent = emLpa;
-      document.getElementById('totalAtrasados').textContent = atrasados;
-    }
+    const temStatus=a?.problemas.find(p=>p.tipo==='status');
+    const temAtencao=a?.problemas.find(p=>p.tipo==='risco');
 
-    function formatDate(dateStr) {
-      if (!dateStr) return '—';
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' });
-    }
+    document.getElementById('raio-x-grid').innerHTML=`
+      <div class="raio-x-item">
+        <div class="raio-x-label">Gerente de Projeto</div>
+        <div class="raio-x-val">${det.gp||a?.gp||'—'}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">ID no Artia</div>
+        <div class="raio-x-val muted">${id}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Última atualização de status</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${ultDataStr}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Dias desde atualização</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${diasStr}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Status do Report</div>
+        <div class="raio-x-val ${temStatus?'alert':'ok'}">${temStatus?temStatus.mensagem:'Em dia ✓'}</div>
+      </div>
+      <div class="raio-x-item">
+        <div class="raio-x-label">Pontos de Atenção</div>
+        <div class="raio-x-val ${temAtencao?'warn':'ok'}">${temAtencao?'Não preenchido ✗':'Preenchido ✓'}</div>
+      </div>
+      <div class="raio-x-item" style="grid-column:1/-1">
+        <div class="raio-x-label">Última sincronização com Artia</div>
+        <div class="raio-x-val muted">${syncStr}</div>
+      </div>
+    `;
+    document.getElementById('raio-x-overlay').classList.add('open');
+  }
 
-    function renderProject(projeto) {
-      const diasSemAtualizacao = projeto.dias_sem_atualizacao;
-      const diasParaTermino = projeto.dias_para_termino;
+  function fecharRaioX(e) {
+    if(e.target.id==='raio-x-overlay') document.getElementById('raio-x-overlay').classList.remove('open');
+  }
 
-      let badgeHtml = '';
-      if (projeto.aguarda_atualizacao) {
-        badgeHtml = `<span class="project-badge lpa">🚨 Sem atualização há ${diasSemAtualizacao} dias</span>`;
-      } else if (projeto.status_prazo === 'atrasado') {
-        badgeHtml = `<span class="project-badge" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.3);color:#fcd34d;">⏰ Atrasado</span>`;
-      } else if (projeto.status_prazo === 'atencao') {
-        badgeHtml = `<span class="project-badge info">⚠️ Atenção</span>`;
-      }
+  function dataLocalParaISO(dataStr) {
+    // Converte 'YYYY-MM-DD' para ISO sem perder o dia por fuso horário
+    const [y,m,d] = dataStr.split('-').map(Number);
+    return new Date(y, m-1, d, 12, 0, 0).toISOString();
+  }
 
-      const card = document.createElement('div');
-      card.className = `project-card ${projeto.aguarda_atualizacao ? 'lpa' : ''}`;
-      card.innerHTML = `
-        <div class="project-name">${projeto.nome}</div>
-        <div class="project-meta">
-          <span><strong>GP:</strong> ${projeto.gp}</span>
-          <span><strong>Status:</strong> ${projeto.situacao}</span>
-        </div>
-        ${badgeHtml}
-        <div class="project-info" style="margin-top:12px;">
-          <div><strong>Última atualização:</strong> ${formatDate(projeto.ultimasInfo_atualizado)}</div>
-          <div><strong>Previsão:</strong> ${formatDate(projeto.estimated_end)}</div>
-          <div><strong>Progresso:</strong> ${projeto.percent_complete}% (Artia: ${projeto.percent_complete_estimated}%)</div>
-        </div>
-      `;
-      return card;
-    }
-
-    function render() {
-      const gridLpa = document.getElementById('gridLpa');
-      const gridAtivos = document.getElementById('gridAtivos');
-      const empty = document.getElementById('empty');
-      const secaoLpa = document.getElementById('secaoLpa');
-      const secaoAtivos = document.getElementById('secaoAtivos');
-
-      gridLpa.innerHTML = '';
-      gridAtivos.innerHTML = '';
-
-      if (allProjects.length === 0) {
-        empty.style.display = 'block';
-        secaoLpa.style.display = 'none';
-        secaoAtivos.style.display = 'none';
-        return;
-      }
-
-      empty.style.display = 'none';
-
-      const emLpa = allProjects.filter(p => p.aguarda_atualizacao);
-      const naoEmLpa = allProjects.filter(p => !p.aguarda_atualizacao);
-
-      // Renderiza por LPA
-      if (filterView === 'todos' || filterView === 'lpa') {
-        if (emLpa.length > 0) {
-          secaoLpa.style.display = 'block';
-          emLpa.forEach(p => gridLpa.appendChild(renderProject(p)));
-        } else {
-          secaoLpa.style.display = 'none';
-        }
-      } else {
-        secaoLpa.style.display = 'none';
-      }
-
-      // Renderiza normais
-      if (filterView === 'todos' || filterView === 'ativos') {
-        if (naoEmLpa.length > 0 && filterView === 'todos') {
-          secaoAtivos.style.display = 'block';
-          naoEmLpa.forEach(p => gridAtivos.appendChild(renderProject(p)));
-        } else if (filterView === 'ativos') {
-          secaoAtivos.style.display = 'block';
-          allProjects.forEach(p => gridAtivos.appendChild(renderProject(p)));
-        } else {
-          secaoAtivos.style.display = filterView === 'todos' ? 'block' : 'none';
-        }
-      } else {
-        secaoAtivos.style.display = 'none';
-      }
-
-      if (filterView === 'atrasados') {
-        secaoLpa.style.display = 'none';
-        secaoAtivos.style.display = 'block';
-        gridAtivos.innerHTML = '';
-        allProjects
-          .filter(p => p.status_prazo === 'atrasado')
-          .forEach(p => gridAtivos.appendChild(renderProject(p)));
-      }
-    }
-
-    function filtrarView(view) {
-      filterView = view;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      render();
-    }
-
-    function updateSyncTime() {
-      const agora = new Date();
-      const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      document.getElementById('syncTime').textContent = `Sincronizado em ${hora}`;
-    }
-
-    // Inicia
-    loadData();
-  </script>
+  carregarDados();
+  setInterval(carregarDados,5*60*1000);
+</script>
 </body>
 </html>
