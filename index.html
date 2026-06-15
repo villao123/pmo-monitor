@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMO Monitor · Grupo DB</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #0a0c10 0%, #16191f 100%);
+      color: #f0f4ff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    header {
+      background: linear-gradient(90deg, #0d2e2b 0%, #1a4a44 100%);
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(0,229,160,0.2);
+      box-shadow: 0 8px 32px rgba(0,229,160,0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .header-meta {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #00e5a0;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6b8299;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f0f4ff;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .section-title.danger { color: #ef4444; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .project-card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(0,229,160,0.3);
+    }
+
+    .project-card.lpa {
+      border-color: rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.05);
+    }
+
+    .project-card.lpa:hover {
+      border-color: rgba(239,68,68,0.6);
+      background: rgba(239,68,68,0.1);
+    }
+
+    .project-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #f0f4ff;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+
+    .project-meta {
+      font-size: 12px;
+      color: #6b8299;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .project-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: rgba(0,229,160,0.15);
+      border: 1px solid rgba(0,229,160,0.3);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6ee7b7;
+    }
+
+    .project-badge.lpa {
+      background: rgba(239,68,68,0.15);
+      border-color: rgba(239,68,68,0.3);
+      color: #f87171;
+    }
+
+    .project-badge.info {
+      background: rgba(59,130,246,0.15);
+      border-color: rgba(59,130,246,0.3);
+      color: #60a5fa;
+    }
+
+    .project-info {
+      font-size: 12px;
+      color: #3d4f63;
+      line-height: 1.6;
+    }
+
+    .project-info strong { color: #6b8299; }
+
+    .empty {
+      text-align: center;
+      padding: 48px 24px;
+      color: #6b8299;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 14px;
+      color: #6b8299;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      color: #6b8299;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(0,229,160,0.15);
+      border-color: rgba(0,229,160,0.3);
+      color: #6ee7b7;
+    }
+
+    .last-sync {
+      font-size: 11px;
+      color: #3d4f63;
+      margin-top: 8px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 Monitor de Projetos</h1>
+      <div class="header-meta">
+        <span>Grupo DB · PMO Corporativo</span>
+        <span id="syncTime"></span>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-num" id="totalProjectos">0</div>
+        <div class="stat-label">Projetos Ativos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="totalLpa" style="color: #ef4444;">0</div>
+        <div class="stat-label">Aguardando Atualização</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="totalAtrasados" style="color: #f59e0b;">0</div>
+        <div class="stat-label">Atrasados</div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-buttons">
+      <button class="filter-btn active" onclick="filtrarView('todos')">Todos</button>
+      <button class="filter-btn" onclick="filtrarView('lpa')">🚨 Em LPA</button>
+      <button class="filter-btn" onclick="filtrarView('atrasados')">⏰ Atrasados</button>
+    </div>
+
+    <!-- Seção: Em LPA (Aguardando Atualização) -->
+    <div id="secaoLpa" style="display:none; margin-bottom: 40px;">
+      <h2 class="section-title danger">🚨 Aguardando Atualização (>7 dias)</h2>
+      <div class="projects-grid" id="gridLpa"></div>
+    </div>
+
+    <!-- Seção: Ativos -->
+    <div id="secaoAtivos">
+      <h2 class="section-title">✅ Projetos em Andamento</h2>
+      <div class="projects-grid" id="gridAtivos"></div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">Carregando dados...</div>
+
+    <!-- Empty state -->
+    <div id="empty" class="empty" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <div>Nenhum projeto encontrado</div>
+    </div>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://pmo-mudancas.vitormanu-dl05.workers.dev'; // Ajuste para seu Worker
+    let allProjects = [];
+    let filterView = 'todos';
+
+    async function loadData() {
+      try {
+        const loading = document.getElementById('loading');
+        loading.style.display = 'block';
+
+        // Tenta carregar do novo endpoint /monitor (filtrado)
+        let response = await fetch(`${WORKER_URL}/monitor`);
+        if (!response.ok) {
+          // Fallback para /projetos-ativos se /monitor não existir
+          response = await fetch(`${WORKER_URL}/projetos-ativos`);
+        }
+
+        allProjects = await response.json();
+        loading.style.display = 'none';
+
+        updateStats();
+        render();
+        updateSyncTime();
+
+        // Auto-refresh a cada 5 minutos
+        setTimeout(loadData, 5 * 60 * 1000);
+      } catch (err) {
+        console.error('Erro ao carregar dados:', err);
+        document.getElementById('loading').innerHTML = `
+          ⚠️ Erro ao carregar dados.<br>
+          <small style="color:#6b8299;">Verifique a URL do Worker</small>
+        `;
+      }
+    }
+
+    function updateStats() {
+      const total = allProjects.length;
+      const emLpa = allProjects.filter(p => p.aguarda_atualizacao).length;
+      const atrasados = allProjects.filter(p => p.status_prazo === 'atrasado').length;
+
+      document.getElementById('totalProjectos').textContent = total;
+      document.getElementById('totalLpa').textContent = emLpa;
+      document.getElementById('totalAtrasados').textContent = atrasados;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' });
+    }
+
+    function renderProject(projeto) {
+      const diasSemAtualizacao = projeto.dias_sem_atualizacao;
+      const diasParaTermino = projeto.dias_para_termino;
+
+      let badgeHtml = '';
+      if (projeto.aguarda_atualizacao) {
+        badgeHtml = `<span class="project-badge lpa">🚨 Sem atualização há ${diasSemAtualizacao} dias</span>`;
+      } else if (projeto.status_prazo === 'atrasado') {
+        badgeHtml = `<span class="project-badge" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.3);color:#fcd34d;">⏰ Atrasado</span>`;
+      } else if (projeto.status_prazo === 'atencao') {
+        badgeHtml = `<span class="project-badge info">⚠️ Atenção</span>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = `project-card ${projeto.aguarda_atualizacao ? 'lpa' : ''}`;
+      card.innerHTML = `
+        <div class="project-name">${projeto.nome}</div>
+        <div class="project-meta">
+          <span><strong>GP:</strong> ${projeto.gp}</span>
+          <span><strong>Status:</strong> ${projeto.situacao}</span>
+        </div>
+        ${badgeHtml}
+        <div class="project-info" style="margin-top:12px;">
+          <div><strong>Última atualização:</strong> ${formatDate(projeto.ultimasInfo_atualizado)}</div>
+          <div><strong>Previsão:</strong> ${formatDate(projeto.estimated_end)}</div>
+          <div><strong>Progresso:</strong> ${projeto.percent_complete}% (Artia: ${projeto.percent_complete_estimated}%)</div>
+        </div>
+      `;
+      return card;
+    }
+
+    function render() {
+      const gridLpa = document.getElementById('gridLpa');
+      const gridAtivos = document.getElementById('gridAtivos');
+      const empty = document.getElementById('empty');
+      const secaoLpa = document.getElementById('secaoLpa');
+      const secaoAtivos = document.getElementById('secaoAtivos');
+
+      gridLpa.innerHTML = '';
+      gridAtivos.innerHTML = '';
+
+      if (allProjects.length === 0) {
+        empty.style.display = 'block';
+        secaoLpa.style.display = 'none';
+        secaoAtivos.style.display = 'none';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      const emLpa = allProjects.filter(p => p.aguarda_atualizacao);
+      const naoEmLpa = allProjects.filter(p => !p.aguarda_atualizacao);
+
+      // Renderiza por LPA
+      if (filterView === 'todos' || filterView === 'lpa') {
+        if (emLpa.length > 0) {
+          secaoLpa.style.display = 'block';
+          emLpa.forEach(p => gridLpa.appendChild(renderProject(p)));
+        } else {
+          secaoLpa.style.display = 'none';
+        }
+      } else {
+        secaoLpa.style.display = 'none';
+      }
+
+      // Renderiza normais
+      if (filterView === 'todos' || filterView === 'ativos') {
+        if (naoEmLpa.length > 0 && filterView === 'todos') {
+          secaoAtivos.style.display = 'block';
+          naoEmLpa.forEach(p => gridAtivos.appendChild(renderProject(p)));
+        } else if (filterView === 'ativos') {
+          secaoAtivos.style.display = 'block';
+          allProjects.forEach(p => gridAtivos.appendChild(renderProject(p)));
+        } else {
+          secaoAtivos.style.display = filterView === 'todos' ? 'block' : 'none';
+        }
+      } else {
+        secaoAtivos.style.display = 'none';
+      }
+
+      if (filterView === 'atrasados') {
+        secaoLpa.style.display = 'none';
+        secaoAtivos.style.display = 'block';
+        gridAtivos.innerHTML = '';
+        allProjects
+          .filter(p => p.status_prazo === 'atrasado')
+          .forEach(p => gridAtivos.appendChild(renderProject(p)));
+      }
+    }
+
+    function filtrarView(view) {
+      filterView = view;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      render();
+    }
+
+    function updateSyncTime() {
+      const agora = new Date();
+      const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('syncTime').textContent = `Sincronizado em ${hora}`;
+    }
+
+    // Inicia
+    loadData();
+  </script>
+</body>
+</html>
