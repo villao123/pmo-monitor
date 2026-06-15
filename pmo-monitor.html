@@ -377,6 +377,18 @@
         } catch(e) {}
       }));
 
+      // ✅ FILTRO: Manter apenas projetos "Em Andamento"
+      const projetosAtivos=projIds.filter(p=>{
+        const situacao=(projetosDetalhes[p.id]?.situacao||'').toLowerCase().trim();
+        return situacao==='em andamento';
+      });
+      
+      // Refiltra alertas e projetos OK para manter apenas os ativos
+      const idsAtivos=new Set(projetosAtivos.map(p=>p.id));
+      todosAlertas=todosAlertas.filter(a=>idsAtivos.has(a.id));
+      todosOk=todosOk.filter(p=>idsAtivos.has(p.id));
+      todosProjetos=projetosAtivos;
+
       atualizarStats();
       renderInsights();
       renderProjetos();
