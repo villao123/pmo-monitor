@@ -311,10 +311,7 @@
         <div class="form-group"><label class="form-label">Nome do GP</label><input class="form-input" id="f-gp" type="text" placeholder="Nome do gerente"></div>
       </div>
       <div class="form-group"><label class="form-label">Nome do Projeto</label><input class="form-input" id="f-nome" type="text" placeholder="Nome do projeto estratégico"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Última atualização de status</label><input class="form-input" id="f-data" type="date"></div>
-        <div class="form-group"><label class="form-label">Data de término prevista</label><input class="form-input" id="f-termino" type="date"></div>
-      </div>
+      <div class="form-group"><label class="form-label">Última atualização de status</label><input class="form-input" id="f-data" type="date"></div>
       <div class="form-check"><input type="checkbox" id="f-atencao"><label for="f-atencao">Pontos de atenção já preenchidos</label></div>
     </div>
     <div class="modal-foot">
@@ -669,7 +666,6 @@
     document.getElementById('f-nome').value='';
     document.getElementById('f-gp').value='';
     document.getElementById('f-data').value=new Date().toISOString().split('T')[0];
-    document.getElementById('f-termino').value='';
     document.getElementById('f-atencao').checked=false;
     document.getElementById('modal-overlay').classList.add('open');
   }
@@ -689,7 +685,6 @@
     document.getElementById('f-data').value=det?.ultimasInfo_atualizado
       ? new Date(det.ultimasInfo_atualizado).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0];
-    document.getElementById('f-termino').value=det?.estimated_end||'';
     document.getElementById('f-atencao').checked=alerta?!alerta.problemas.some(p=>p.tipo==='risco'):true;
     document.getElementById('modal-overlay').classList.add('open');
   }
@@ -703,13 +698,11 @@
     const nome=document.getElementById('f-nome').value.trim();
     const gp=document.getElementById('f-gp').value.trim();
     const data=document.getElementById('f-data').value;
-    const termino=document.getElementById('f-termino').value;
     const atencao=document.getElementById('f-atencao').checked;
     if(!id||!nome||!gp){toast('Preencha ID, nome e GP','error');return;}
-    if(!termino){toast('Preencha a data de término prevista','error');return;}
     try {
       const res=await fetch(`${WORKER}/projetos`,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({id,nome,gp,ultimasInfo_atualizado:data?dataLocalParaISO(data):null,estimated_end:termino,restricoes_preenchido:atencao})});
+        body:JSON.stringify({id,nome,gp,ultimasInfo_atualizado:data?dataLocalParaISO(data):null,restricoes_preenchido:atencao})});
       if(res.ok){toast('Projeto salvo!','success');fecharModal();setTimeout(carregarDados,500);}
       else toast('Erro ao salvar','error');
     } catch(e){toast('Erro de conexão','error');}
